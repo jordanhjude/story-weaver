@@ -4,9 +4,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import Write from "./pages/Write";
-import StoryView from "./pages/StoryView";
-import EditStory from "./pages/EditStory";
+import Comics from "./pages/Comics";
+import ComicView from "./pages/ComicView";
+import Ranking from "./pages/Ranking";
+import Library from "./pages/Library";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,9 +20,10 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/write" element={<Write />} />
-          <Route path="/story/:id" element={<StoryView />} />
-          <Route path="/edit/:id" element={<EditStory />} />
+          <Route path="/comics" element={<Comics />} />
+          <Route path="/comic/:id" element={<ComicView />} />
+          <Route path="/ranking" element={<Ranking />} />
+          <Route path="/library" element={<Library />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

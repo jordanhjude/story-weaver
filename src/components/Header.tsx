@@ -1,34 +1,73 @@
 import { Link } from "react-router-dom";
-import { PenLine, User } from "lucide-react";
+import { Search, Book, Trophy, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export function Header() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/comics?search=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 glass">
-      <div className="container flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
+      <div className="container flex h-16 items-center justify-between gap-4">
+        <Link to="/" className="flex items-center gap-2 shrink-0">
           <div className="relative">
-            <div className="absolute -inset-1 rounded-lg gradient-primary opacity-60 blur-sm group-hover:opacity-100 transition-opacity" />
-            <span className="relative font-serif text-2xl font-bold tracking-tight">
-              BEA<span className="text-gradient">tales</span>
+            <span className="font-black text-2xl tracking-tight">
+              <span className="text-primary">HONEY</span>
+              <span className="text-foreground">TOON</span>
             </span>
           </div>
         </Link>
         
-        <div className="flex items-center gap-3">
-          <Link to="/write">
-            <Button size="sm" className="gap-2 gradient-primary border-0 hover:opacity-90 transition-opacity">
-              <PenLine className="h-4 w-4" />
-              <span className="hidden sm:inline">Write</span>
-            </Button>
+        <nav className="hidden md:flex items-center gap-6">
+          <Link 
+            to="/library" 
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Book className="h-4 w-4" />
+            My Library
           </Link>
-          <Avatar className="h-9 w-9 border-2 border-primary/50">
-            <AvatarImage src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop" />
-            <AvatarFallback className="bg-secondary">
-              <User className="h-4 w-4" />
-            </AvatarFallback>
-          </Avatar>
+          <Link 
+            to="/comics" 
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <span className="text-lg">📚</span>
+            Comics
+          </Link>
+          <Link 
+            to="/ranking" 
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Trophy className="h-4 w-4 text-primary" />
+            Ranking
+          </Link>
+        </nav>
+
+        <div className="flex items-center gap-3 flex-1 justify-end">
+          <form onSubmit={handleSearch} className="relative hidden sm:block max-w-xs w-full">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Search comics..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 bg-secondary/50 border-border/50 focus:border-primary"
+            />
+          </form>
+          
+          <Button variant="outline" size="sm" className="shrink-0">
+            <User className="h-4 w-4 mr-2" />
+            Account
+          </Button>
         </div>
       </div>
     </header>
