@@ -10,6 +10,9 @@ import EpisodeReader from "./pages/EpisodeReader";
 import Ranking from "./pages/Ranking";
 import Library from "./pages/Library";
 import Auth from "./pages/Auth";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +31,9 @@ const App = () => (
           <Route path="/ranking" element={<Ranking />} />
           <Route path="/library" element={<Library />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
