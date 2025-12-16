@@ -8,6 +8,7 @@ import Comics from "./pages/Comics";
 import ComicView from "./pages/ComicView";
 import Ranking from "./pages/Ranking";
 import Library from "./pages/Library";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/comic/:id" element={<ComicView />} />
           <Route path="/ranking" element={<Ranking />} />
           <Route path="/library" element={<Library />} />
+          <Route path="/auth" element={<Auth />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
