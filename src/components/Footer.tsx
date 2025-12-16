@@ -7,8 +7,8 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span className="font-black text-xl">
-              <span className="text-primary">HONEY</span>
-              <span className="text-foreground">TOON</span>
+              <span className="text-primary">JJ</span>
+              <span className="text-foreground">tales</span>
             </span>
             <span className="text-muted-foreground text-sm">
               © {new Date().getFullYear()}

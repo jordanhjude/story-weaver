@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Comic, SAMPLE_COMICS } from "@/types/comic";
 
-const STORAGE_KEY = "honeytoon_comics";
+const STORAGE_KEY = "jjtales_comics";
 
 export function useComics() {
   const [comics, setComics] = useState<Comic[]>([]);

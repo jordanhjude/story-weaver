@@ -1,13 +1,29 @@
-import { Link } from "react-router-dom";
-import { Search, Book, Trophy, User } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, Book, Trophy, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { User as SupabaseUser } from "@supabase/supabase-js";
 
 export function Header() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [user, setUser] = useState<SupabaseUser | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,14 +32,18 @@ export function Header() {
     }
   };
 
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/50 glass">
       <div className="container flex h-16 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2 shrink-0">
           <div className="relative">
             <span className="font-black text-2xl tracking-tight">
-              <span className="text-primary">HONEY</span>
-              <span className="text-foreground">TOON</span>
+              <span className="text-primary">JJ</span>
+              <span className="text-foreground">tales</span>
             </span>
           </div>
         </Link>
@@ -64,10 +84,17 @@ export function Header() {
             />
           </form>
           
-          <Button variant="outline" size="sm" className="shrink-0">
-            <User className="h-4 w-4 mr-2" />
-            Account
-          </Button>
+          {user ? (
+            <Button variant="outline" size="sm" className="shrink-0" onClick={handleSignOut}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Sign Out
+            </Button>
+          ) : (
+            <Button variant="outline" size="sm" className="shrink-0" onClick={() => navigate("/auth")}>
+              <User className="h-4 w-4 mr-2" />
+              Sign In
+            </Button>
+          )}
         </div>
       </div>
     </header>
