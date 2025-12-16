@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Comic } from "@/types/comic";
@@ -52,9 +52,14 @@ export function HeroCarousel({ comics }: HeroCarouselProps) {
             ))}
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-black mb-4 leading-tight">
+          <h1 className="text-4xl md:text-5xl font-black mb-3 leading-tight">
             {current.title}
           </h1>
+
+          <div className="flex items-center gap-2 mb-4">
+            <MapPin className="w-4 h-4 text-primary" />
+            <span className="text-foreground font-medium">Written in {current.city}</span>
+          </div>
           
           <p className="text-muted-foreground text-sm md:text-base mb-6 line-clamp-3">
             {current.description}

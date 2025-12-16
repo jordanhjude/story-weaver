@@ -42,9 +42,9 @@ export function ComicCard({ comic, index = 0 }: ComicCardProps) {
           <h3 className="font-bold text-sm line-clamp-2 leading-tight">
             {comic.title}
           </h3>
-          <div className="flex items-center gap-1 mt-1">
-            <MapPin className="w-3 h-3 text-primary" />
-            <span className="text-[10px] text-muted-foreground">{comic.city}</span>
+          <div className="flex items-center gap-1 mt-1.5">
+            <MapPin className="w-3.5 h-3.5 text-primary flex-shrink-0" />
+            <span className="text-xs text-foreground font-medium">{comic.city}</span>
           </div>
           <div className="flex gap-1 mt-1 flex-wrap">
             {comic.genres.slice(0, 2).map((genre) => (
