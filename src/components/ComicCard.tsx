@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { MapPin } from "lucide-react";
 import { Comic } from "@/types/comic";
 
 interface ComicCardProps {
@@ -41,7 +42,11 @@ export function ComicCard({ comic, index = 0 }: ComicCardProps) {
           <h3 className="font-bold text-sm line-clamp-2 leading-tight">
             {comic.title}
           </h3>
-          <div className="flex gap-1 mt-1.5 flex-wrap">
+          <div className="flex items-center gap-1 mt-1">
+            <MapPin className="w-3 h-3 text-primary" />
+            <span className="text-[10px] text-muted-foreground">{comic.city}</span>
+          </div>
+          <div className="flex gap-1 mt-1 flex-wrap">
             {comic.genres.slice(0, 2).map((genre) => (
               <span 
                 key={genre} 

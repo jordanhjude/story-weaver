@@ -18,6 +18,7 @@ export interface Comic {
   episodeCount: number;
   views: number;
   likes: number;
+  city: string;
   isFeatured?: boolean;
   isNew?: boolean;
   createdAt: Date;
@@ -55,6 +56,7 @@ export const SAMPLE_COMICS: Comic[] = [
     episodeCount: 24,
     views: 125000,
     likes: 8500,
+    city: "Tokyo, Japan",
     isFeatured: true,
     createdAt: new Date("2024-01-15"),
     updatedAt: new Date("2024-12-10"),
@@ -68,6 +70,7 @@ export const SAMPLE_COMICS: Comic[] = [
     episodeCount: 7,
     views: 89000,
     likes: 12000,
+    city: "Paris, France",
     isNew: true,
     createdAt: new Date("2024-06-01"),
     updatedAt: new Date("2024-12-08"),
@@ -81,6 +84,7 @@ export const SAMPLE_COMICS: Comic[] = [
     episodeCount: 7,
     views: 156000,
     likes: 9800,
+    city: "Seoul, South Korea",
     isFeatured: true,
     createdAt: new Date("2024-03-20"),
     updatedAt: new Date("2024-12-09"),
@@ -94,6 +98,7 @@ export const SAMPLE_COMICS: Comic[] = [
     episodeCount: 28,
     views: 234000,
     likes: 15000,
+    city: "Dubai, UAE",
     createdAt: new Date("2024-02-10"),
     updatedAt: new Date("2024-12-11"),
   },
@@ -106,6 +111,7 @@ export const SAMPLE_COMICS: Comic[] = [
     episodeCount: 10,
     views: 98000,
     likes: 7200,
+    city: "London, UK",
     createdAt: new Date("2024-04-05"),
     updatedAt: new Date("2024-12-07"),
   },
@@ -118,6 +124,7 @@ export const SAMPLE_COMICS: Comic[] = [
     episodeCount: 10,
     views: 67000,
     likes: 4500,
+    city: "Rome, Italy",
     createdAt: new Date("2024-05-12"),
     updatedAt: new Date("2024-12-06"),
   },
@@ -130,6 +137,7 @@ export const SAMPLE_COMICS: Comic[] = [
     episodeCount: 15,
     views: 178000,
     likes: 21000,
+    city: "Vienna, Austria",
     isFeatured: true,
     createdAt: new Date("2024-01-28"),
     updatedAt: new Date("2024-12-10"),
@@ -143,6 +151,7 @@ export const SAMPLE_COMICS: Comic[] = [
     episodeCount: 32,
     views: 312000,
     likes: 28000,
+    city: "Kyoto, Japan",
     createdAt: new Date("2023-11-15"),
     updatedAt: new Date("2024-12-11"),
   },
