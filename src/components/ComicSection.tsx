@@ -1,4 +1,4 @@
-import { Comic } from "@/types/comic";
+import { Comic } from "@/hooks/useComicsDB";
 import { ComicCard } from "./ComicCard";
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";

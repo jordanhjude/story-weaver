@@ -4,7 +4,7 @@ import { HeroCarousel } from "@/components/HeroCarousel";
 import { ComicSection } from "@/components/ComicSection";
 import { AuthorLocation } from "@/components/AuthorLocation";
 import { SupportSection } from "@/components/SupportSection";
-import { useComics } from "@/hooks/useComics";
+import { useComicsDB } from "@/hooks/useComicsDB";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Index() {
@@ -14,7 +14,7 @@ export default function Index() {
     getRisingStars, 
     getFanFavorites,
     getNewReleases 
-  } = useComics();
+  } = useComicsDB();
 
   const featured = getFeaturedComics();
   const risingStars = getRisingStars();

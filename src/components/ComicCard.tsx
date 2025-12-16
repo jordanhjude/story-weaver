@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { MapPin } from "lucide-react";
-import { Comic } from "@/types/comic";
+import { Comic } from "@/hooks/useComicsDB";
 
 interface ComicCardProps {
   comic: Comic;
@@ -17,18 +17,18 @@ export function ComicCard({ comic, index = 0 }: ComicCardProps) {
     >
       <div className="relative aspect-[2/3] rounded-lg overflow-hidden bg-card">
         <img 
-          src={comic.coverImage} 
+          src={comic.cover_image || "/placeholder.svg"} 
           alt={comic.title}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         
         {/* Episode Count Badge */}
         <div className="absolute bottom-2 right-2 bg-background/80 backdrop-blur-sm rounded px-2 py-0.5">
-          <span className="text-xs font-semibold text-primary">{comic.episodeCount}</span>
+          <span className="text-xs font-semibold text-primary">{comic.episode_count}</span>
         </div>
 
         {/* New Badge */}
-        {comic.isNew && (
+        {comic.is_new && (
           <div className="absolute top-2 left-2">
             <Badge className="bg-primary text-primary-foreground text-xs">NEW</Badge>
           </div>
@@ -47,7 +47,7 @@ export function ComicCard({ comic, index = 0 }: ComicCardProps) {
             <span className="text-xs text-foreground font-medium">{comic.city}</span>
           </div>
           <div className="flex gap-1 mt-1 flex-wrap">
-            {comic.genres.slice(0, 2).map((genre) => (
+            {comic.genres?.slice(0, 2).map((genre) => (
               <span 
                 key={genre} 
                 className="text-[10px] text-primary capitalize"
