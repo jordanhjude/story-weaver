@@ -1,13 +1,22 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { ArrowLeft } from "lucide-react";
 
 export default function Auth() {
   const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    // Check for error in URL hash (from OAuth redirect)
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const errorParam = hashParams.get("error_description") || hashParams.get("error");
+    if (errorParam) {
+      setError(decodeURIComponent(errorParam));
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (session?.user) {
@@ -41,6 +50,14 @@ export default function Auth() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        <Link 
+          to="/" 
+          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Home
+        </Link>
+
         <div className="text-center mb-8">
           <h1 className="font-black text-4xl tracking-tight mb-2">
             <span className="text-primary">JJ</span>
@@ -50,6 +67,12 @@ export default function Auth() {
             Sign in to access your library and support the author
           </p>
         </div>
+
+        {error && (
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 mb-6 text-center">
+            <p className="text-destructive text-sm">{error}</p>
+          </div>
+        )}
 
         <div className="bg-card border border-border rounded-2xl p-8">
           <Button
