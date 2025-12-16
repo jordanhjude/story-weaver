@@ -124,15 +124,28 @@ export default function EpisodeReader() {
         </div>
       </header>
 
-      {/* Images */}
+      {/* Story Content */}
       <main className="pt-14 pb-20">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-3xl mx-auto px-4">
+          {/* Episode Title */}
+          <h2 className="text-2xl font-bold text-center py-8">
+            Episode {epNum}: {episode.title}
+          </h2>
+
+          {/* Story Text */}
+          {episode.content && (
+            <div className="prose prose-invert max-w-none mb-8 text-foreground/90 leading-relaxed whitespace-pre-line bg-card/50 rounded-lg p-6">
+              {episode.content}
+            </div>
+          )}
+
+          {/* Images */}
           {episode.images?.map((image: string, index: number) => (
             <img
               key={index}
               src={image}
               alt={`Page ${index + 1}`}
-              className="w-full"
+              className="w-full rounded-lg mb-4"
               loading={index > 2 ? "lazy" : "eager"}
             />
           ))}

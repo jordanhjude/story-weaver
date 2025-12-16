@@ -68,27 +68,33 @@ export type Database = {
       episodes: {
         Row: {
           comic_id: string
+          content: string | null
           created_at: string
           episode_number: number
           id: string
           images: string[] | null
           title: string
+          videos: string[] | null
         }
         Insert: {
           comic_id: string
+          content?: string | null
           created_at?: string
           episode_number: number
           id?: string
           images?: string[] | null
           title: string
+          videos?: string[] | null
         }
         Update: {
           comic_id?: string
+          content?: string | null
           created_at?: string
           episode_number?: number
           id?: string
           images?: string[] | null
           title?: string
+          videos?: string[] | null
         }
         Relationships: [
           {
