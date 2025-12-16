@@ -11,11 +11,24 @@ export function useComics() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       const parsed = JSON.parse(stored);
-      setComics(parsed.map((c: any) => ({
-        ...c,
-        createdAt: new Date(c.createdAt),
-        updatedAt: new Date(c.updatedAt),
-      })));
+
+      const hydrated: Comic[] = parsed.map((c: any) => {
+        const fallback = SAMPLE_COMICS.find((s) => s.id === c.id);
+        return {
+          ...c,
+          city: c.city ?? fallback?.city ?? "",
+          createdAt: new Date(c.createdAt),
+          updatedAt: new Date(c.updatedAt),
+        } as Comic;
+      });
+
+      setComics(hydrated);
+
+      // migrate older localStorage data (e.g. before `city` existed)
+      const needsMigration = hydrated.some((c) => !c.city);
+      if (needsMigration) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(hydrated));
+      }
     } else {
       setComics(SAMPLE_COMICS);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(SAMPLE_COMICS));
