@@ -14,7 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      comics: {
+        Row: {
+          banner_image: string | null
+          city: string | null
+          cover_image: string | null
+          created_at: string
+          description: string | null
+          episode_count: number | null
+          genres: string[] | null
+          id: string
+          is_featured: boolean | null
+          is_new: boolean | null
+          likes: number | null
+          title: string
+          updated_at: string
+          views: number | null
+        }
+        Insert: {
+          banner_image?: string | null
+          city?: string | null
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          episode_count?: number | null
+          genres?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_new?: boolean | null
+          likes?: number | null
+          title: string
+          updated_at?: string
+          views?: number | null
+        }
+        Update: {
+          banner_image?: string | null
+          city?: string | null
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          episode_count?: number | null
+          genres?: string[] | null
+          id?: string
+          is_featured?: boolean | null
+          is_new?: boolean | null
+          likes?: number | null
+          title?: string
+          updated_at?: string
+          views?: number | null
+        }
+        Relationships: []
+      }
+      episodes: {
+        Row: {
+          comic_id: string
+          created_at: string
+          episode_number: number
+          id: string
+          images: string[] | null
+          title: string
+        }
+        Insert: {
+          comic_id: string
+          created_at?: string
+          episode_number: number
+          id?: string
+          images?: string[] | null
+          title: string
+        }
+        Update: {
+          comic_id?: string
+          created_at?: string
+          episode_number?: number
+          id?: string
+          images?: string[] | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "episodes_comic_id_fkey"
+            columns: ["comic_id"]
+            isOneToOne: false
+            referencedRelation: "comics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
