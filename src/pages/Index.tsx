@@ -2,6 +2,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { HeroCarousel } from "@/components/HeroCarousel";
 import { ComicSection } from "@/components/ComicSection";
+import { AuthorLocation } from "@/components/AuthorLocation";
+import { SupportSection } from "@/components/SupportSection";
 import { useComics } from "@/hooks/useComics";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -29,6 +31,12 @@ export default function Index() {
         ) : (
           <HeroCarousel comics={featured} />
         )}
+
+        <AuthorLocation 
+          city="Paris" 
+          country="France" 
+          nextDestination="Tokyo, Japan"
+        />
 
         {isLoading ? (
           <div className="container py-8">
@@ -61,6 +69,8 @@ export default function Index() {
             />
           </>
         )}
+
+        <SupportSection />
       </main>
 
       <Footer />
