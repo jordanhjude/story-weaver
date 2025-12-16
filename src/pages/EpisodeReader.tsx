@@ -126,29 +126,46 @@ export default function EpisodeReader() {
 
       {/* Story Content */}
       <main className="pt-14 pb-20">
-        <div className="max-w-3xl mx-auto px-4">
+        <div className="max-w-2xl mx-auto px-4">
           {/* Episode Title */}
           <h2 className="text-2xl font-bold text-center py-8">
             Episode {epNum}: {episode.title}
           </h2>
 
-          {/* Story Text */}
-          {episode.content && (
-            <div className="prose prose-invert max-w-none mb-8 text-foreground/90 leading-relaxed whitespace-pre-line bg-card/50 rounded-lg p-6">
-              {episode.content}
-            </div>
-          )}
-
-          {/* Images */}
-          {episode.images?.map((image: string, index: number) => (
-            <img
-              key={index}
-              src={image}
-              alt={`Page ${index + 1}`}
-              className="w-full rounded-lg mb-4"
-              loading={index > 2 ? "lazy" : "eager"}
-            />
-          ))}
+          {/* Story with images interspersed */}
+          {(() => {
+            const paragraphs = episode.content?.split('\n\n').filter((p: string) => p.trim()) || [];
+            const images = episode.images || [];
+            const elements: React.ReactNode[] = [];
+            
+            paragraphs.forEach((paragraph: string, index: number) => {
+              // Add paragraph
+              elements.push(
+                <p key={`p-${index}`} className="text-foreground/90 leading-relaxed mb-6 text-base">
+                  {paragraph}
+                </p>
+              );
+              
+              // Add image after certain paragraphs (distribute images evenly)
+              const imageIndex = Math.floor((index + 1) * images.length / paragraphs.length) - 1;
+              const prevImageIndex = index === 0 ? -1 : Math.floor(index * images.length / paragraphs.length) - 1;
+              
+              if (imageIndex >= 0 && imageIndex !== prevImageIndex && images[imageIndex]) {
+                elements.push(
+                  <figure key={`img-${imageIndex}`} className="my-8 flex justify-center">
+                    <img
+                      src={images[imageIndex]}
+                      alt={`Illustration ${imageIndex + 1}`}
+                      className="w-3/4 max-w-md rounded-lg shadow-lg"
+                      loading={imageIndex > 1 ? "lazy" : "eager"}
+                    />
+                  </figure>
+                );
+              }
+            });
+            
+            return elements;
+          })()}
         </div>
       </main>
 
