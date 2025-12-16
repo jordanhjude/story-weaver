@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Comics from "./pages/Comics";
 import ComicView from "./pages/ComicView";
+import EpisodeReader from "./pages/EpisodeReader";
 import Ranking from "./pages/Ranking";
 import Library from "./pages/Library";
 import Auth from "./pages/Auth";
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/comics" element={<Comics />} />
           <Route path="/comic/:id" element={<ComicView />} />
+          <Route path="/comic/:comicId/episode/:episodeNumber" element={<EpisodeReader />} />
           <Route path="/ranking" element={<Ranking />} />
           <Route path="/library" element={<Library />} />
           <Route path="/auth" element={<Auth />} />

@@ -4,13 +4,25 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useComics } from "@/hooks/useComics";
+import { useComic, useEpisodes } from "@/hooks/useComicsDB";
 import { toast } from "sonner";
 
 export default function ComicView() {
   const { id } = useParams();
-  const { getComic } = useComics();
-  const comic = getComic(id || "");
+  const { data: comic, isLoading: comicLoading } = useComic(id || "");
+  const { data: episodes = [], isLoading: episodesLoading } = useEpisodes(id || "");
+
+  if (comicLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="animate-pulse text-muted-foreground">Loading...</div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!comic) {
     return (
@@ -34,6 +46,14 @@ export default function ComicView() {
     toast.success("Link copied to clipboard!");
   };
 
+  const handleStartReading = () => {
+    if (episodes.length > 0) {
+      window.location.href = `/comic/${id}/episode/1`;
+    } else {
+      toast.info("No episodes available yet");
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -43,7 +63,7 @@ export default function ComicView() {
         <div className="relative h-[300px] md:h-[400px]">
           <div 
             className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${comic.bannerImage || comic.coverImage})` }}
+            style={{ backgroundImage: `url(${comic.banner_image || comic.cover_image})` }}
           >
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
           </div>
@@ -64,7 +84,7 @@ export default function ComicView() {
             {/* Cover */}
             <div className="shrink-0">
               <img 
-                src={comic.coverImage}
+                src={comic.cover_image || "/placeholder.svg"}
                 alt={comic.title}
                 className="w-48 md:w-56 aspect-[2/3] object-cover rounded-lg shadow-2xl mx-auto md:mx-0"
               />
@@ -73,7 +93,7 @@ export default function ComicView() {
             {/* Info */}
             <div className="flex-1 pt-4">
               <div className="flex gap-2 mb-3">
-                {comic.genres.map((genre) => (
+                {comic.genres?.map((genre) => (
                   <Badge key={genre} variant="secondary" className="capitalize">
                     {genre}
                   </Badge>
@@ -99,12 +119,16 @@ export default function ComicView() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <BookOpen className="h-4 w-4" />
-                  <span>{comic.episodeCount} episodes</span>
+                  <span>{episodes.length} episodes</span>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <Button size="lg" className="gradient-primary text-primary-foreground font-semibold px-8">
+                <Button 
+                  size="lg" 
+                  className="gradient-primary text-primary-foreground font-semibold px-8"
+                  onClick={handleStartReading}
+                >
                   Start Reading
                 </Button>
                 <Button size="lg" variant="outline" onClick={handleShare}>
@@ -116,26 +140,33 @@ export default function ComicView() {
           </div>
 
           {/* Episodes List */}
-          <div className="mt-12">
+          <div className="mt-12 pb-12">
             <h2 className="text-xl font-bold mb-4">Episodes</h2>
-            <div className="grid gap-2">
-              {[...Array(comic.episodeCount)].map((_, i) => (
-                <div 
-                  key={i}
-                  className="flex items-center justify-between p-4 bg-card rounded-lg hover:bg-card/80 transition-colors cursor-pointer"
-                >
-                  <div className="flex items-center gap-4">
-                    <span className="text-muted-foreground text-sm w-12">
-                      Ep. {i + 1}
+            {episodesLoading ? (
+              <div className="animate-pulse text-muted-foreground">Loading episodes...</div>
+            ) : episodes.length === 0 ? (
+              <p className="text-muted-foreground">No episodes available yet.</p>
+            ) : (
+              <div className="grid gap-2">
+                {episodes.map((episode) => (
+                  <Link 
+                    key={episode.id}
+                    to={`/comic/${id}/episode/${episode.episode_number}`}
+                    className="flex items-center justify-between p-4 bg-card rounded-lg hover:bg-card/80 transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="text-muted-foreground text-sm w-12">
+                        Ep. {episode.episode_number}
+                      </span>
+                      <span className="font-medium">{episode.title}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(episode.created_at).toLocaleDateString()}
                     </span>
-                    <span className="font-medium">Episode {i + 1}</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {new Date(comic.createdAt.getTime() + i * 86400000 * 7).toLocaleDateString()}
-                  </span>
-                </div>
-              ))}
-            </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>

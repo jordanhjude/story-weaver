@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Comic } from "@/types/comic";
+import { Comic } from "@/hooks/useComicsDB";
 
 interface HeroCarouselProps {
   comics: Comic[];
@@ -32,7 +32,7 @@ export function HeroCarousel({ comics }: HeroCarouselProps) {
       {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center transition-all duration-700"
-        style={{ backgroundImage: `url(${current.bannerImage || current.coverImage})` }}
+        style={{ backgroundImage: `url(${current.banner_image || current.cover_image})` }}
       >
         <div className="absolute inset-0 gradient-hero" />
       </div>
@@ -41,7 +41,7 @@ export function HeroCarousel({ comics }: HeroCarouselProps) {
       <div className="relative container h-full flex items-center">
         <div className="max-w-lg animate-slide-in" key={current.id}>
           <div className="flex gap-2 mb-4">
-            {current.genres.map((genre) => (
+            {current.genres?.map((genre) => (
               <Badge 
                 key={genre} 
                 variant="secondary" 

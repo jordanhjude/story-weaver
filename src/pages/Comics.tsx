@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ComicCard } from "@/components/ComicCard";
 import { Button } from "@/components/ui/button";
-import { useComics } from "@/hooks/useComics";
+import { useComicsDB } from "@/hooks/useComicsDB";
 import { GENRES } from "@/types/comic";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -14,7 +14,7 @@ export default function Comics() {
   const sortBy = searchParams.get("sort") || "";
   
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
-  const { comics, isLoading, searchComics, filterByGenre } = useComics();
+  const { comics, isLoading, searchComics, filterByGenre } = useComicsDB();
 
   const filteredComics = useMemo(() => {
     let result = comics;
@@ -32,7 +32,7 @@ export default function Comics() {
     } else if (sortBy === "likes") {
       result = [...result].sort((a, b) => b.likes - a.likes);
     } else if (sortBy === "new") {
-      result = [...result].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      result = [...result].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     }
 
     return result;
