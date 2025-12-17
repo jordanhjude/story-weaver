@@ -40,7 +40,6 @@ export default function EpisodeReader() {
   const epNum = parseInt(episodeNumber || "1");
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const { data: comic } = useQuery({
     queryKey: ["comic", comicId],
@@ -95,12 +94,11 @@ export default function EpisodeReader() {
     }
   };
 
+  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
+
   const stopNarration = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      audioRef.current = null;
-    }
+    window.speechSynthesis.cancel();
+    speechRef.current = null;
     setIsPlaying(false);
     setIsLoading(false);
   };
@@ -111,7 +109,7 @@ export default function EpisodeReader() {
     };
   }, [comicId, epNum]);
 
-  const playNarration = async () => {
+  const playNarration = () => {
     if (isPlaying) {
       stopNarration();
       return;
@@ -122,52 +120,58 @@ export default function EpisodeReader() {
       return;
     }
 
-    setIsLoading(true);
-    toast.info("Generating voice narration...");
-
-    try {
-      const response = await supabase.functions.invoke('text-to-speech', {
-        body: { 
-          text: episode.content.substring(0, 4000),
-          voice: 'nova'
-        }
-      });
-
-      if (response.error) {
-        throw new Error(response.error.message || 'Failed to generate speech');
-      }
-
-      const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
-      const audioUrl = URL.createObjectURL(audioBlob);
-      
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-
-      audio.onplay = () => {
-        setIsPlaying(true);
-        setIsLoading(false);
-      };
-
-      audio.onended = () => {
-        setIsPlaying(false);
-        URL.revokeObjectURL(audioUrl);
-        audioRef.current = null;
-      };
-
-      audio.onerror = () => {
-        setIsPlaying(false);
-        setIsLoading(false);
-        toast.error("Failed to play audio");
-        URL.revokeObjectURL(audioUrl);
-      };
-
-      await audio.play();
-      toast.success("Playing narration...");
-    } catch (error) {
-      console.error('TTS error:', error);
-      setIsLoading(false);
-      toast.error("Failed to generate narration. Please try again.");
+    if (!window.speechSynthesis) {
+      toast.error("Speech synthesis not supported in this browser");
+      return;
     }
+
+    setIsLoading(true);
+    
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(episode.content);
+    speechRef.current = utterance;
+    
+    // Configure voice settings for better quality
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    // Try to get a good English voice
+    const voices = window.speechSynthesis.getVoices();
+    const preferredVoice = voices.find(v => 
+      v.name.includes('Google') || 
+      v.name.includes('Samantha') || 
+      v.name.includes('Daniel') ||
+      (v.lang.startsWith('en') && v.localService === false)
+    ) || voices.find(v => v.lang.startsWith('en'));
+    
+    if (preferredVoice) {
+      utterance.voice = preferredVoice;
+    }
+
+    utterance.onstart = () => {
+      setIsPlaying(true);
+      setIsLoading(false);
+      toast.success("Playing narration...");
+    };
+
+    utterance.onend = () => {
+      setIsPlaying(false);
+      speechRef.current = null;
+    };
+
+    utterance.onerror = (event) => {
+      console.error('Speech error:', event);
+      setIsPlaying(false);
+      setIsLoading(false);
+      if (event.error !== 'canceled') {
+        toast.error("Failed to play narration");
+      }
+    };
+
+    window.speechSynthesis.speak(utterance);
   };
 
   if (episodeLoading) {
