@@ -11,7 +11,7 @@ interface ComicCardProps {
 export function ComicCard({ comic, index = 0 }: ComicCardProps) {
   return (
     <Link 
-      to={`/comic/${comic.id}`}
+      to={`/tale/${comic.id}`}
       className="group block card-hover opacity-0 animate-fade-in"
       style={{ animationDelay: `${index * 0.1}s`, animationFillMode: "forwards" }}
     >

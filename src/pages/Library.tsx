@@ -42,7 +42,7 @@ export default function Library() {
             </div>
             <h2 className="text-xl font-semibold mb-2">Sign in to see your library</h2>
             <p className="text-muted-foreground mb-6 max-w-sm">
-              Create an account to save your favorite comics
+              Create an account to save your favorite tales
             </p>
             <Link to="/auth">
               <Button className="gradient-primary">Sign In</Button>
@@ -77,10 +77,10 @@ export default function Library() {
             </div>
             <h2 className="text-xl font-semibold mb-2">Your library is empty</h2>
             <p className="text-muted-foreground mb-6 max-w-sm">
-              Start reading comics and add them to your library
+              Start reading tales and add them to your library
             </p>
-            <Link to="/comics">
-              <Button className="gradient-primary">Browse Comics</Button>
+            <Link to="/tales">
+              <Button className="gradient-primary">Browse Tales</Button>
             </Link>
           </div>
         ) : (

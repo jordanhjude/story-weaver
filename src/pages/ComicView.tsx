@@ -30,7 +30,7 @@ export default function ComicView() {
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-2">Comic not found</h1>
+            <h1 className="text-2xl font-bold mb-2">Tale not found</h1>
             <Link to="/" className="text-primary hover:underline">
               Back to home
             </Link>
@@ -48,7 +48,7 @@ export default function ComicView() {
 
   const handleStartReading = () => {
     if (episodes.length > 0) {
-      window.location.href = `/comic/${id}/episode/1`;
+      window.location.href = `/tale/${id}/episode/1`;
     } else {
       toast.info("No episodes available yet");
     }
@@ -151,7 +151,7 @@ export default function ComicView() {
                 {episodes.map((episode) => (
                   <Link 
                     key={episode.id}
-                    to={`/comic/${id}/episode/${episode.episode_number}`}
+                    to={`/tale/${id}/episode/${episode.episode_number}`}
                     className="flex items-center justify-between p-4 bg-card rounded-lg hover:bg-card/80 transition-colors"
                   >
                     <div className="flex items-center gap-4">

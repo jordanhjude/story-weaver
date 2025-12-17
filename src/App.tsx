@@ -26,9 +26,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/comics" element={<Comics />} />
-          <Route path="/comic/:id" element={<ComicView />} />
-          <Route path="/comic/:comicId/episode/:episodeNumber" element={<EpisodeReader />} />
+          <Route path="/tales" element={<Comics />} />
+          <Route path="/tale/:id" element={<ComicView />} />
+          <Route path="/tale/:comicId/episode/:episodeNumber" element={<EpisodeReader />} />
           <Route path="/ranking" element={<Ranking />} />
           <Route path="/library" element={<Library />} />
           <Route path="/auth" element={<Auth />} />
