@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 import { StoryImage } from "@/components/StoryImage";
-
+import { getEpisodeImage } from "@/data/episodeImages";
 // Extract key scene descriptions from story content
 function extractScenePrompts(content: string, title: string, comicTitle: string): string[] {
   const paragraphs = content.split('\n\n').filter(p => p.trim().length > 50);
@@ -229,7 +229,9 @@ export default function EpisodeReader() {
   const scenePrompts = episode.content 
     ? extractScenePrompts(episode.content, episode.title, comic?.title || "Story")
     : [];
-
+  
+  // Get pre-generated image if available
+  const preGeneratedImage = comicId ? getEpisodeImage(comicId, epNum) : null;
   return (
     <div className="min-h-screen bg-black">
       {/* Header */}
@@ -299,8 +301,20 @@ export default function EpisodeReader() {
             Episode {epNum}: {episode.title}
           </h2>
 
-          {/* Opening AI Image */}
-          {scenePrompts.length > 0 && (
+          {/* Pre-generated Episode Image */}
+          {preGeneratedImage && (
+            <figure className="my-8 flex justify-center">
+              <img 
+                src={preGeneratedImage}
+                alt={`Scene from ${episode.title}`}
+                className="w-full max-w-lg rounded-lg shadow-lg"
+                loading="lazy"
+              />
+            </figure>
+          )}
+
+          {/* Fallback to AI Generation if no pre-generated image */}
+          {!preGeneratedImage && scenePrompts.length > 0 && (
             <figure className="my-8 flex justify-center">
               <StoryImage 
                 prompt={scenePrompts[0]}
@@ -311,51 +325,15 @@ export default function EpisodeReader() {
             </figure>
           )}
 
-          {/* Story with images interspersed */}
+          {/* Story paragraphs */}
           {(() => {
             const paragraphs = episode.content?.split('\n\n').filter((p: string) => p.trim()) || [];
-            const elements: React.ReactNode[] = [];
-            const midPoint = Math.floor(paragraphs.length / 2);
-            const climaxPoint = Math.floor(paragraphs.length * 0.75);
             
-            paragraphs.forEach((paragraph: string, index: number) => {
-              // Add paragraph with proper styling
-              elements.push(
-                <p key={`p-${index}`} className="text-foreground/90 leading-relaxed mb-6 text-base first-letter:text-3xl first-letter:font-bold first-letter:mr-1 first-letter:float-left">
-                  {paragraph}
-                </p>
-              );
-
-              // Add mid-story AI image
-              if (index === midPoint && scenePrompts.length > 1) {
-                elements.push(
-                  <figure key="mid-image" className="my-10 flex justify-center">
-                    <StoryImage 
-                      prompt={scenePrompts[1]}
-                      fallbackUrl={existingImages[1]}
-                      className="w-full max-w-lg"
-                      alt="Story moment"
-                    />
-                  </figure>
-                );
-              }
-
-              // Add climax AI image
-              if (index === climaxPoint && scenePrompts.length > 2) {
-                elements.push(
-                  <figure key="climax-image" className="my-10 flex justify-center">
-                    <StoryImage 
-                      prompt={scenePrompts[2]}
-                      fallbackUrl={existingImages[2]}
-                      className="w-full max-w-lg"
-                      alt="Climactic moment"
-                    />
-                  </figure>
-                );
-              }
-            });
-            
-            return elements;
+            return paragraphs.map((paragraph: string, index: number) => (
+              <p key={`p-${index}`} className="text-foreground/90 leading-relaxed mb-6 text-base first-letter:text-3xl first-letter:font-bold first-letter:mr-1 first-letter:float-left">
+                {paragraph}
+              </p>
+            ));
           })()}
 
           {/* End decoration */}
