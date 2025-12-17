@@ -17,46 +17,62 @@ serve(async (req) => {
       throw new Error("Prompt is required");
     }
 
-    const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-    if (!OPENAI_API_KEY) {
-      throw new Error("OpenAI API key not configured");
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("Lovable API key not configured");
     }
 
     console.log(`Generating image for: ${prompt.substring(0, 100)}...`);
 
     // Enhance the prompt for cinematic storytelling visuals
-    const enhancedPrompt = `Cinematic, dramatic scene: ${prompt}. Style: ${style || 'photorealistic cinematic photography'}, moody lighting, film grain, 35mm film look, Oscar-winning cinematography, emotional depth, dramatic composition.`;
+    const enhancedPrompt = `Cinematic, dramatic scene: ${prompt}. Style: ${style || 'photorealistic cinematic photography'}, moody lighting, film grain, 35mm film look, Oscar-winning cinematography, emotional depth, dramatic composition. Ultra high resolution.`;
 
-    const response = await fetch("https://api.openai.com/v1/images/generations", {
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${OPENAI_API_KEY}`,
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "gpt-image-1",
-        prompt: enhancedPrompt,
-        n: 1,
-        size: "1024x1024",
-        quality: "high",
+        model: "google/gemini-2.5-flash-image-preview",
+        messages: [
+          {
+            role: "user",
+            content: enhancedPrompt
+          }
+        ],
+        modalities: ["image", "text"]
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("OpenAI API error:", response.status, errorText);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      console.error("Lovable AI error:", response.status, errorText);
+      
+      if (response.status === 429) {
+        throw new Error("Rate limit exceeded. Please try again in a moment.");
+      }
+      if (response.status === 402) {
+        throw new Error("Usage limit reached. Please add credits to your workspace.");
+      }
+      throw new Error(`AI API error: ${response.status}`);
     }
 
     const data = await response.json();
-    const imageBase64 = data.data[0].b64_json;
+    console.log("Response received from Lovable AI");
+    
+    // Extract the image from the response
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    
+    if (!imageUrl) {
+      console.error("No image in response:", JSON.stringify(data));
+      throw new Error("No image generated");
+    }
     
     console.log("Image generated successfully");
 
     return new Response(
-      JSON.stringify({ 
-        image: `data:image/png;base64,${imageBase64}` 
-      }),
+      JSON.stringify({ image: imageUrl }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }
