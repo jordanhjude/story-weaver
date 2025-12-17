@@ -1,13 +1,18 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Volume2, VolumeX, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useState, useRef } from "react";
+import { toast } from "sonner";
 
 export default function EpisodeReader() {
   const { comicId, episodeNumber } = useParams();
   const navigate = useNavigate();
   const epNum = parseInt(episodeNumber || "1");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoadingAudio] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const { data: comic } = useQuery({
     queryKey: ["comic", comicId],
@@ -22,7 +27,7 @@ export default function EpisodeReader() {
     },
   });
 
-  const { data: episode, isLoading } = useQuery({
+  const { data: episode, isLoading: episodeLoading } = useQuery({
     queryKey: ["episode", comicId, epNum],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -49,18 +54,90 @@ export default function EpisodeReader() {
   });
 
   const goToPrev = () => {
+    stopNarration();
     if (epNum > 1) {
       navigate(`/tale/${comicId}/episode/${epNum - 1}`);
     }
   };
 
   const goToNext = () => {
+    stopNarration();
     if (episodeCount && epNum < episodeCount) {
       navigate(`/tale/${comicId}/episode/${epNum + 1}`);
     }
   };
 
-  if (isLoading) {
+  const stopNarration = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    setIsPlaying(false);
+  };
+
+  const playNarration = async () => {
+    if (isPlaying) {
+      stopNarration();
+      return;
+    }
+
+    if (!episode?.content) {
+      toast.error("No content to narrate");
+      return;
+    }
+
+    setIsLoadingAudio(true);
+    try {
+      // Get first 500 characters for narration (API limit)
+      const textToNarrate = episode.content.slice(0, 2000);
+      
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/text-to-speech`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ 
+            text: textToNarrate,
+            voiceId: "JBFqnCBsd6RMkjVDRZzb" // George - storytelling voice
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to generate narration");
+      }
+
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+      
+      audio.onended = () => {
+        setIsPlaying(false);
+        URL.revokeObjectURL(audioUrl);
+      };
+      
+      audio.onerror = () => {
+        setIsPlaying(false);
+        toast.error("Failed to play audio");
+      };
+
+      await audio.play();
+      setIsPlaying(true);
+    } catch (error) {
+      console.error("Narration error:", error);
+      toast.error("Failed to generate narration. Please try again.");
+    } finally {
+      setIsLoadingAudio(false);
+    }
+  };
+
+  if (episodeLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-pulse text-muted-foreground">Loading...</div>
@@ -78,6 +155,8 @@ export default function EpisodeReader() {
       </div>
     );
   }
+
+  const videos = episode.videos || [];
 
   return (
     <div className="min-h-screen bg-black">
@@ -101,6 +180,23 @@ export default function EpisodeReader() {
           </div>
 
           <div className="flex items-center gap-1">
+            {/* Narration Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={playNarration}
+              disabled={isLoading}
+              title={isPlaying ? "Stop narration" : "Listen to story"}
+            >
+              {isLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : isPlaying ? (
+                <VolumeX className="h-5 w-5" />
+              ) : (
+                <Volume2 className="h-5 w-5" />
+              )}
+            </Button>
+            
             <Button
               variant="ghost"
               size="icon"
@@ -132,6 +228,21 @@ export default function EpisodeReader() {
             Episode {epNum}: {episode.title}
           </h2>
 
+          {/* Opening Video if available */}
+          {videos.length > 0 && videos[0] && (
+            <figure className="my-8">
+              <div className="aspect-video rounded-lg overflow-hidden shadow-2xl">
+                <iframe
+                  src={videos[0]}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="Episode video"
+                />
+              </div>
+            </figure>
+          )}
+
           {/* Story with images interspersed */}
           {(() => {
             const paragraphs = episode.content?.split('\n\n').filter((p: string) => p.trim()) || [];
@@ -162,10 +273,42 @@ export default function EpisodeReader() {
                   </figure>
                 );
               }
+
+              // Add mid-story video if available
+              if (videos.length > 1 && index === Math.floor(paragraphs.length / 2) && videos[1]) {
+                elements.push(
+                  <figure key="mid-video" className="my-10">
+                    <div className="aspect-video rounded-lg overflow-hidden shadow-2xl">
+                      <iframe
+                        src={videos[1]}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title="Episode video"
+                      />
+                    </div>
+                  </figure>
+                );
+              }
             });
             
             return elements;
           })()}
+
+          {/* End Video if available */}
+          {videos.length > 2 && videos[2] && (
+            <figure className="my-8">
+              <div className="aspect-video rounded-lg overflow-hidden shadow-2xl">
+                <iframe
+                  src={videos[2]}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="Episode video"
+                />
+              </div>
+            </figure>
+          )}
         </div>
       </main>
 

@@ -1,1 +1,7 @@
 project_id = "wrmbqtqmvzrplfsnzjpc"
+
+[functions.create-donation]
+verify_jwt = false
+
+[functions.text-to-speech]
+verify_jwt = false
