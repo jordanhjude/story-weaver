@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Volume2, VolumeX, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,30 +11,8 @@ export default function EpisodeReader() {
   const navigate = useNavigate();
   const epNum = parseInt(episodeNumber || "1");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
-  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
-
-  // Load available voices
-  useEffect(() => {
-    const loadVoices = () => {
-      const availableVoices = window.speechSynthesis.getVoices();
-      console.log("Loaded voices:", availableVoices.length);
-      setVoices(availableVoices);
-    };
-
-    loadVoices();
-    
-    // Chrome requires listening to voiceschanged event
-    if (typeof window !== 'undefined' && window.speechSynthesis) {
-      window.speechSynthesis.onvoiceschanged = loadVoices;
-    }
-
-    return () => {
-      if (typeof window !== 'undefined' && window.speechSynthesis) {
-        window.speechSynthesis.onvoiceschanged = null;
-      }
-    };
-  }, []);
+  const [isLoading, setIsLoading] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const { data: comic } = useQuery({
     queryKey: ["comic", comicId],
@@ -90,92 +68,81 @@ export default function EpisodeReader() {
   };
 
   const stopNarration = () => {
-    console.log("Stopping narration");
-    window.speechSynthesis.cancel();
-    speechRef.current = null;
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
     setIsPlaying(false);
+    setIsLoading(false);
   };
 
-  // Cleanup on unmount
+  // Cleanup on unmount or episode change
   useEffect(() => {
     return () => {
-      window.speechSynthesis.cancel();
+      stopNarration();
     };
-  }, []);
+  }, [comicId, epNum]);
 
-  const playNarration = () => {
-    console.log("Play narration clicked, isPlaying:", isPlaying);
-    
+  const playNarration = async () => {
     if (isPlaying) {
       stopNarration();
       return;
     }
 
     if (!episode?.content) {
-      console.log("No content to narrate");
       toast.error("No content to narrate");
       return;
     }
 
-    if (!('speechSynthesis' in window)) {
-      console.log("Speech synthesis not supported");
-      toast.error("Voice narration not supported in this browser");
-      return;
-    }
+    setIsLoading(true);
+    toast.info("Generating voice narration...");
 
-    // Cancel any pending speech
-    window.speechSynthesis.cancel();
+    try {
+      // Use the edge function for TTS
+      const response = await supabase.functions.invoke('text-to-speech', {
+        body: { 
+          text: episode.content.substring(0, 4000), // Limit text length
+          voice: 'nova' // Good storytelling voice
+        }
+      });
 
-    // Create speech utterance with shorter text chunks for reliability
-    const textToSpeak = episode.content.substring(0, 3000);
-    console.log("Creating utterance with text length:", textToSpeak.length);
-    
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    utterance.rate = 0.9;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-    
-    // Try to get a good English voice
-    console.log("Available voices:", voices.length);
-    const englishVoice = voices.find(v => v.lang.startsWith('en-') && v.name.toLowerCase().includes('female')) 
-      || voices.find(v => v.lang.startsWith('en-US'))
-      || voices.find(v => v.lang.startsWith('en'));
-    
-    if (englishVoice) {
-      console.log("Using voice:", englishVoice.name);
-      utterance.voice = englishVoice;
-    } else {
-      console.log("No English voice found, using default");
-    }
-
-    utterance.onstart = () => {
-      console.log("Speech started");
-      setIsPlaying(true);
-    };
-
-    utterance.onend = () => {
-      console.log("Speech ended");
-      setIsPlaying(false);
-      speechRef.current = null;
-    };
-
-    utterance.onerror = (event) => {
-      console.error("Speech error:", event.error);
-      setIsPlaying(false);
-      speechRef.current = null;
-      if (event.error !== 'canceled') {
-        toast.error("Failed to play narration: " + event.error);
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to generate speech');
       }
-    };
 
-    speechRef.current = utterance;
-    
-    // Small delay helps with Chrome
-    setTimeout(() => {
-      console.log("Speaking...");
-      window.speechSynthesis.speak(utterance);
+      // The response is audio data
+      const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      
+      const audio = new Audio(audioUrl);
+      audioRef.current = audio;
+
+      audio.onplay = () => {
+        setIsPlaying(true);
+        setIsLoading(false);
+      };
+
+      audio.onended = () => {
+        setIsPlaying(false);
+        URL.revokeObjectURL(audioUrl);
+        audioRef.current = null;
+      };
+
+      audio.onerror = () => {
+        setIsPlaying(false);
+        setIsLoading(false);
+        toast.error("Failed to play audio");
+        URL.revokeObjectURL(audioUrl);
+      };
+
+      await audio.play();
       toast.success("Playing narration...");
-    }, 100);
+    } catch (error) {
+      console.error('TTS error:', error);
+      setIsLoading(false);
+      toast.error("Failed to generate narration. Please try again.");
+    }
   };
 
   if (episodeLoading) {
@@ -197,7 +164,7 @@ export default function EpisodeReader() {
     );
   }
 
-  const videos = episode.videos || [];
+  const images = episode.images || [];
 
   return (
     <div className="min-h-screen bg-black">
@@ -226,9 +193,12 @@ export default function EpisodeReader() {
               variant="ghost"
               size="icon"
               onClick={playNarration}
+              disabled={isLoading}
               title={isPlaying ? "Stop narration" : "Listen to story"}
             >
-              {isPlaying ? (
+              {isLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : isPlaying ? (
                 <VolumeX className="h-5 w-5" />
               ) : (
                 <Volume2 className="h-5 w-5" />
@@ -266,25 +236,9 @@ export default function EpisodeReader() {
             Episode {epNum}: {episode.title}
           </h2>
 
-          {/* Opening Video if available */}
-          {videos.length > 0 && videos[0] && (
-            <figure className="my-8">
-              <div className="aspect-video rounded-lg overflow-hidden shadow-2xl">
-                <iframe
-                  src={videos[0]}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title="Episode video"
-                />
-              </div>
-            </figure>
-          )}
-
           {/* Story with images interspersed */}
           {(() => {
             const paragraphs = episode.content?.split('\n\n').filter((p: string) => p.trim()) || [];
-            const images = episode.images || [];
             const elements: React.ReactNode[] = [];
             
             paragraphs.forEach((paragraph: string, index: number) => {
@@ -311,42 +265,10 @@ export default function EpisodeReader() {
                   </figure>
                 );
               }
-
-              // Add mid-story video if available
-              if (videos.length > 1 && index === Math.floor(paragraphs.length / 2) && videos[1]) {
-                elements.push(
-                  <figure key="mid-video" className="my-10">
-                    <div className="aspect-video rounded-lg overflow-hidden shadow-2xl">
-                      <iframe
-                        src={videos[1]}
-                        className="w-full h-full"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        title="Episode video"
-                      />
-                    </div>
-                  </figure>
-                );
-              }
             });
             
             return elements;
           })()}
-
-          {/* End Video if available */}
-          {videos.length > 2 && videos[2] && (
-            <figure className="my-8">
-              <div className="aspect-video rounded-lg overflow-hidden shadow-2xl">
-                <iframe
-                  src={videos[2]}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title="Episode video"
-                />
-              </div>
-            </figure>
-          )}
         </div>
       </main>
 
