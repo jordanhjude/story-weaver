@@ -5,6 +5,34 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
+import { StoryImage } from "@/components/StoryImage";
+
+// Extract key scene descriptions from story content
+function extractScenePrompts(content: string, title: string, comicTitle: string): string[] {
+  const paragraphs = content.split('\n\n').filter(p => p.trim().length > 50);
+  const prompts: string[] = [];
+  
+  // Opening scene
+  if (paragraphs.length > 0) {
+    const firstPara = paragraphs[0].substring(0, 200);
+    prompts.push(`Opening scene from "${comicTitle}": ${firstPara}`);
+  }
+  
+  // Mid-story dramatic moment
+  if (paragraphs.length > 3) {
+    const midIndex = Math.floor(paragraphs.length / 2);
+    const midPara = paragraphs[midIndex].substring(0, 200);
+    prompts.push(`Dramatic scene from "${title}": ${midPara}`);
+  }
+  
+  // Climax/ending scene
+  if (paragraphs.length > 5) {
+    const endPara = paragraphs[paragraphs.length - 2].substring(0, 200);
+    prompts.push(`Climactic moment from "${comicTitle}": ${endPara}`);
+  }
+  
+  return prompts;
+}
 
 export default function EpisodeReader() {
   const { comicId, episodeNumber } = useParams();
@@ -77,7 +105,6 @@ export default function EpisodeReader() {
     setIsLoading(false);
   };
 
-  // Cleanup on unmount or episode change
   useEffect(() => {
     return () => {
       stopNarration();
@@ -99,11 +126,10 @@ export default function EpisodeReader() {
     toast.info("Generating voice narration...");
 
     try {
-      // Use the edge function for TTS
       const response = await supabase.functions.invoke('text-to-speech', {
         body: { 
-          text: episode.content.substring(0, 4000), // Limit text length
-          voice: 'nova' // Good storytelling voice
+          text: episode.content.substring(0, 4000),
+          voice: 'nova'
         }
       });
 
@@ -111,7 +137,6 @@ export default function EpisodeReader() {
         throw new Error(response.error.message || 'Failed to generate speech');
       }
 
-      // The response is audio data
       const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
       const audioUrl = URL.createObjectURL(audioBlob);
       
@@ -164,7 +189,10 @@ export default function EpisodeReader() {
     );
   }
 
-  const images = episode.images || [];
+  const existingImages = episode.images || [];
+  const scenePrompts = episode.content 
+    ? extractScenePrompts(episode.content, episode.title, comic?.title || "Story")
+    : [];
 
   return (
     <div className="min-h-screen bg-black">
@@ -188,7 +216,6 @@ export default function EpisodeReader() {
           </div>
 
           <div className="flex items-center gap-1">
-            {/* Narration Button */}
             <Button
               variant="ghost"
               size="icon"
@@ -236,31 +263,56 @@ export default function EpisodeReader() {
             Episode {epNum}: {episode.title}
           </h2>
 
+          {/* Opening AI Image */}
+          {scenePrompts.length > 0 && (
+            <figure className="my-8 flex justify-center">
+              <StoryImage 
+                prompt={scenePrompts[0]}
+                fallbackUrl={existingImages[0]}
+                className="w-full max-w-lg"
+                alt="Opening scene"
+              />
+            </figure>
+          )}
+
           {/* Story with images interspersed */}
           {(() => {
             const paragraphs = episode.content?.split('\n\n').filter((p: string) => p.trim()) || [];
             const elements: React.ReactNode[] = [];
+            const midPoint = Math.floor(paragraphs.length / 2);
+            const climaxPoint = Math.floor(paragraphs.length * 0.75);
             
             paragraphs.forEach((paragraph: string, index: number) => {
-              // Add paragraph
+              // Add paragraph with proper styling
               elements.push(
-                <p key={`p-${index}`} className="text-foreground/90 leading-relaxed mb-6 text-base">
+                <p key={`p-${index}`} className="text-foreground/90 leading-relaxed mb-6 text-base first-letter:text-3xl first-letter:font-bold first-letter:mr-1 first-letter:float-left">
                   {paragraph}
                 </p>
               );
-              
-              // Add image after certain paragraphs (distribute images evenly)
-              const imageIndex = Math.floor((index + 1) * images.length / paragraphs.length) - 1;
-              const prevImageIndex = index === 0 ? -1 : Math.floor(index * images.length / paragraphs.length) - 1;
-              
-              if (imageIndex >= 0 && imageIndex !== prevImageIndex && images[imageIndex]) {
+
+              // Add mid-story AI image
+              if (index === midPoint && scenePrompts.length > 1) {
                 elements.push(
-                  <figure key={`img-${imageIndex}`} className="my-8 flex justify-center">
-                    <img
-                      src={images[imageIndex]}
-                      alt={`Illustration ${imageIndex + 1}`}
-                      className="w-3/4 max-w-md rounded-lg shadow-lg"
-                      loading={imageIndex > 1 ? "lazy" : "eager"}
+                  <figure key="mid-image" className="my-10 flex justify-center">
+                    <StoryImage 
+                      prompt={scenePrompts[1]}
+                      fallbackUrl={existingImages[1]}
+                      className="w-full max-w-lg"
+                      alt="Story moment"
+                    />
+                  </figure>
+                );
+              }
+
+              // Add climax AI image
+              if (index === climaxPoint && scenePrompts.length > 2) {
+                elements.push(
+                  <figure key="climax-image" className="my-10 flex justify-center">
+                    <StoryImage 
+                      prompt={scenePrompts[2]}
+                      fallbackUrl={existingImages[2]}
+                      className="w-full max-w-lg"
+                      alt="Climactic moment"
                     />
                   </figure>
                 );
@@ -269,6 +321,11 @@ export default function EpisodeReader() {
             
             return elements;
           })()}
+
+          {/* End decoration */}
+          <div className="text-center py-8 text-muted-foreground">
+            <span className="text-2xl">✦ ✦ ✦</span>
+          </div>
         </div>
       </main>
 
