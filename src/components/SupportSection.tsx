@@ -1,19 +1,37 @@
-import { Heart, MapPin, CreditCard } from "lucide-react";
+import { Heart, MapPin, CreditCard, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const DONATION_AMOUNTS = [5, 10, 25, 50];
 
 export function SupportSection() {
   const [selectedAmount, setSelectedAmount] = useState<number | null>(25);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleDonate = () => {
+  const handleDonate = async () => {
     if (!selectedAmount) {
       toast.error("Please select a donation amount");
       return;
     }
-    toast.success(`Thank you for your $${selectedAmount} donation! This feature will be fully enabled soon.`);
+    
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-donation", {
+        body: { amount: selectedAmount },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.open(data.url, "_blank");
+      }
+    } catch (error) {
+      console.error("Donation error:", error);
+      toast.error("Failed to process donation. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -54,10 +72,15 @@ export function SupportSection() {
             ))}
             <Button 
               onClick={handleDonate}
+              disabled={isLoading}
               className="ml-2 bg-primary hover:bg-primary/90"
             >
-              <CreditCard className="w-4 h-4 mr-1" />
-              Donate
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+              ) : (
+                <CreditCard className="w-4 h-4 mr-1" />
+              )}
+              {isLoading ? "Processing..." : "Donate"}
             </Button>
           </div>
         </div>
