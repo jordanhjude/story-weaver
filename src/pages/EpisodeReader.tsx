@@ -95,9 +95,35 @@ export default function EpisodeReader() {
   };
 
   const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+
+  // Load voices when available
+  useEffect(() => {
+    const loadVoices = () => {
+      const availableVoices = window.speechSynthesis?.getVoices() || [];
+      if (availableVoices.length > 0) {
+        setVoices(availableVoices);
+      }
+    };
+
+    loadVoices();
+    
+    // Chrome loads voices asynchronously
+    if (window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    return () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = null;
+      }
+    };
+  }, []);
 
   const stopNarration = () => {
-    window.speechSynthesis.cancel();
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
     speechRef.current = null;
     setIsPlaying(false);
     setIsLoading(false);
@@ -130,22 +156,24 @@ export default function EpisodeReader() {
     // Cancel any ongoing speech
     window.speechSynthesis.cancel();
 
-    const utterance = new SpeechSynthesisUtterance(episode.content);
+    // Limit content length to avoid issues
+    const textToSpeak = episode.content.substring(0, 5000);
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
     speechRef.current = utterance;
     
-    // Configure voice settings for better quality
-    utterance.rate = 0.9;
+    // Configure voice settings
+    utterance.rate = 0.95;
     utterance.pitch = 1;
     utterance.volume = 1;
 
-    // Try to get a good English voice
-    const voices = window.speechSynthesis.getVoices();
+    // Select best available voice
     const preferredVoice = voices.find(v => 
       v.name.includes('Google') || 
       v.name.includes('Samantha') || 
       v.name.includes('Daniel') ||
-      (v.lang.startsWith('en') && v.localService === false)
-    ) || voices.find(v => v.lang.startsWith('en'));
+      v.name.includes('Microsoft') ||
+      (v.lang.startsWith('en') && !v.localService)
+    ) || voices.find(v => v.lang.startsWith('en')) || voices[0];
     
     if (preferredVoice) {
       utterance.voice = preferredVoice;
@@ -163,15 +191,19 @@ export default function EpisodeReader() {
     };
 
     utterance.onerror = (event) => {
-      console.error('Speech error:', event);
+      console.error('Speech error:', event.error);
       setIsPlaying(false);
       setIsLoading(false);
-      if (event.error !== 'canceled') {
-        toast.error("Failed to play narration");
+      speechRef.current = null;
+      if (event.error !== 'canceled' && event.error !== 'interrupted') {
+        toast.error("Speech synthesis error. Try again.");
       }
     };
 
-    window.speechSynthesis.speak(utterance);
+    // Small delay to ensure everything is ready
+    setTimeout(() => {
+      window.speechSynthesis.speak(utterance);
+    }, 100);
   };
 
   if (episodeLoading) {
