@@ -50,13 +50,13 @@ export default function EpisodeReader() {
 
   const goToPrev = () => {
     if (epNum > 1) {
-      navigate(`/comic/${comicId}/episode/${epNum - 1}`);
+      navigate(`/tale/${comicId}/episode/${epNum - 1}`);
     }
   };
 
   const goToNext = () => {
     if (episodeCount && epNum < episodeCount) {
-      navigate(`/comic/${comicId}/episode/${epNum + 1}`);
+      navigate(`/tale/${comicId}/episode/${epNum + 1}`);
     }
   };
 
@@ -72,8 +72,8 @@ export default function EpisodeReader() {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
         <h1 className="text-2xl font-bold">Episode not found</h1>
-        <Link to={`/comic/${comicId}`} className="text-primary hover:underline">
-          Back to comic
+        <Link to={`/tale/${comicId}`} className="text-primary hover:underline">
+          Back to tale
         </Link>
       </div>
     );
@@ -84,7 +84,7 @@ export default function EpisodeReader() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="container flex items-center justify-between h-14">
-          <Link to={`/comic/${comicId}`}>
+          <Link to={`/tale/${comicId}`}>
             <Button variant="ghost" size="sm" className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back

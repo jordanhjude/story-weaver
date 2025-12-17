@@ -52,20 +52,20 @@ export default function Index() {
             <ComicSection 
               title="Rising Stars" 
               comics={risingStars} 
-              seeAllLink="/comics?sort=views"
+              seeAllLink="/tales?sort=views"
             />
             
             <ComicSection 
               title="Fan Favorites" 
               comics={fanFavorites} 
-              seeAllLink="/comics?sort=likes"
+              seeAllLink="/tales?sort=likes"
               variant="highlight"
             />
 
             <ComicSection 
               title="New Releases" 
               comics={newReleases} 
-              seeAllLink="/comics?sort=new"
+              seeAllLink="/tales?sort=new"
             />
           </>
         )}

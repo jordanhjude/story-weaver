@@ -65,7 +65,7 @@ export function HeroCarousel({ comics }: HeroCarouselProps) {
             {current.description}
           </p>
           
-          <Link to={`/comic/${current.id}`}>
+          <Link to={`/tale/${current.id}`}>
             <Button size="lg" className="gradient-primary text-primary-foreground font-semibold px-8">
               Read now
             </Button>

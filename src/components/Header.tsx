@@ -28,7 +28,7 @@ export function Header() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/comics?search=${encodeURIComponent(searchQuery)}`);
+      navigate(`/tales?search=${encodeURIComponent(searchQuery)}`);
     }
   };
 
@@ -57,11 +57,11 @@ export function Header() {
             My Library
           </Link>
           <Link 
-            to="/comics" 
+            to="/tales" 
             className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             <span className="text-lg">📚</span>
-            Comics
+            Tales
           </Link>
           <Link 
             to="/ranking" 
@@ -77,7 +77,7 @@ export function Header() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search comics..."
+              placeholder="Search tales..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9 bg-secondary/50 border-border/50 focus:border-primary"
