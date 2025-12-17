@@ -1,9 +1,9 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronLeft, ChevronRight, Volume2, VolumeX, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "sonner";
 
 export default function EpisodeReader() {
@@ -11,8 +11,7 @@ export default function EpisodeReader() {
   const navigate = useNavigate();
   const epNum = parseInt(episodeNumber || "1");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoadingAudio] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const { data: comic } = useQuery({
     queryKey: ["comic", comicId],
@@ -68,14 +67,19 @@ export default function EpisodeReader() {
   };
 
   const stopNarration = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
+    window.speechSynthesis.cancel();
+    speechRef.current = null;
     setIsPlaying(false);
   };
 
-  const playNarration = async () => {
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  const playNarration = () => {
     if (isPlaying) {
       stopNarration();
       return;
@@ -86,55 +90,38 @@ export default function EpisodeReader() {
       return;
     }
 
-    setIsLoadingAudio(true);
-    try {
-      // Get first 500 characters for narration (API limit)
-      const textToNarrate = episode.content.slice(0, 2000);
-      
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/text-to-speech`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-          body: JSON.stringify({ 
-            text: textToNarrate,
-            voiceId: "JBFqnCBsd6RMkjVDRZzb" // George - storytelling voice
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to generate narration");
-      }
-
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
-      
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-      
-      audio.onended = () => {
-        setIsPlaying(false);
-        URL.revokeObjectURL(audioUrl);
-      };
-      
-      audio.onerror = () => {
-        setIsPlaying(false);
-        toast.error("Failed to play audio");
-      };
-
-      await audio.play();
-      setIsPlaying(true);
-    } catch (error) {
-      console.error("Narration error:", error);
-      toast.error("Failed to generate narration. Please try again.");
-    } finally {
-      setIsLoadingAudio(false);
+    if (!('speechSynthesis' in window)) {
+      toast.error("Voice narration not supported in this browser");
+      return;
     }
+
+    // Create speech utterance
+    const utterance = new SpeechSynthesisUtterance(episode.content);
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    
+    // Try to get a good storytelling voice
+    const voices = window.speechSynthesis.getVoices();
+    const englishVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) 
+      || voices.find(v => v.lang.startsWith('en'));
+    if (englishVoice) {
+      utterance.voice = englishVoice;
+    }
+
+    utterance.onend = () => {
+      setIsPlaying(false);
+      speechRef.current = null;
+    };
+
+    utterance.onerror = () => {
+      setIsPlaying(false);
+      toast.error("Failed to play narration");
+    };
+
+    speechRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+    setIsPlaying(true);
+    toast.success("Playing narration...");
   };
 
   if (episodeLoading) {
@@ -185,12 +172,9 @@ export default function EpisodeReader() {
               variant="ghost"
               size="icon"
               onClick={playNarration}
-              disabled={isLoading}
               title={isPlaying ? "Stop narration" : "Listen to story"}
             >
-              {isLoading ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : isPlaying ? (
+              {isPlaying ? (
                 <VolumeX className="h-5 w-5" />
               ) : (
                 <Volume2 className="h-5 w-5" />
