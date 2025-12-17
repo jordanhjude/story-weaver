@@ -22,10 +22,12 @@ serve(async (req) => {
       throw new Error("Lovable API key not configured");
     }
 
-    console.log(`Generating image for: ${prompt.substring(0, 100)}...`);
+    console.log(`Generating image for prompt: ${prompt.substring(0, 100)}...`);
 
-    // Enhance the prompt for cinematic storytelling visuals
-    const enhancedPrompt = `Cinematic, dramatic scene: ${prompt}. Style: ${style || 'photorealistic cinematic photography'}, moody lighting, film grain, 35mm film look, Oscar-winning cinematography, emotional depth, dramatic composition. Ultra high resolution.`;
+    // Enhanced prompt for cinematic storytelling visuals
+    const enhancedPrompt = `Cinematic, dramatic scene: ${prompt}. Style: ${style || 'photorealistic cinematic photography'}, moody lighting, film grain, 35mm film look, emotional depth, dramatic composition. Ultra high resolution.`;
+
+    console.log("Calling Lovable AI...");
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -45,6 +47,8 @@ serve(async (req) => {
       }),
     });
 
+    console.log(`API response status: ${response.status}`);
+
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Lovable AI error:", response.status, errorText);
@@ -55,21 +59,26 @@ serve(async (req) => {
       if (response.status === 402) {
         throw new Error("Usage limit reached. Please add credits to your workspace.");
       }
-      throw new Error(`AI API error: ${response.status}`);
+      throw new Error(`AI API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log("Response received from Lovable AI");
+    console.log("Response keys:", Object.keys(data));
+    console.log("Choices:", data.choices?.length);
+    
+    if (data.choices?.[0]?.message) {
+      console.log("Message keys:", Object.keys(data.choices[0].message));
+    }
     
     // Extract the image from the response
     const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
     
     if (!imageUrl) {
-      console.error("No image in response:", JSON.stringify(data));
-      throw new Error("No image generated");
+      console.error("No image in response. Full response:", JSON.stringify(data, null, 2));
+      throw new Error("No image generated - check response format");
     }
     
-    console.log("Image generated successfully");
+    console.log("Image generated successfully, length:", imageUrl.length);
 
     return new Response(
       JSON.stringify({ image: imageUrl }),
