@@ -11,7 +11,30 @@ export default function EpisodeReader() {
   const navigate = useNavigate();
   const epNum = parseInt(episodeNumber || "1");
   const [isPlaying, setIsPlaying] = useState(false);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  // Load available voices
+  useEffect(() => {
+    const loadVoices = () => {
+      const availableVoices = window.speechSynthesis.getVoices();
+      console.log("Loaded voices:", availableVoices.length);
+      setVoices(availableVoices);
+    };
+
+    loadVoices();
+    
+    // Chrome requires listening to voiceschanged event
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    return () => {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.onvoiceschanged = null;
+      }
+    };
+  }, []);
 
   const { data: comic } = useQuery({
     queryKey: ["comic", comicId],
@@ -67,6 +90,7 @@ export default function EpisodeReader() {
   };
 
   const stopNarration = () => {
+    console.log("Stopping narration");
     window.speechSynthesis.cancel();
     speechRef.current = null;
     setIsPlaying(false);
@@ -80,48 +104,78 @@ export default function EpisodeReader() {
   }, []);
 
   const playNarration = () => {
+    console.log("Play narration clicked, isPlaying:", isPlaying);
+    
     if (isPlaying) {
       stopNarration();
       return;
     }
 
     if (!episode?.content) {
+      console.log("No content to narrate");
       toast.error("No content to narrate");
       return;
     }
 
     if (!('speechSynthesis' in window)) {
+      console.log("Speech synthesis not supported");
       toast.error("Voice narration not supported in this browser");
       return;
     }
 
-    // Create speech utterance
-    const utterance = new SpeechSynthesisUtterance(episode.content);
+    // Cancel any pending speech
+    window.speechSynthesis.cancel();
+
+    // Create speech utterance with shorter text chunks for reliability
+    const textToSpeak = episode.content.substring(0, 3000);
+    console.log("Creating utterance with text length:", textToSpeak.length);
+    
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
     utterance.rate = 0.9;
     utterance.pitch = 1;
+    utterance.volume = 1;
     
-    // Try to get a good storytelling voice
-    const voices = window.speechSynthesis.getVoices();
-    const englishVoice = voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) 
+    // Try to get a good English voice
+    console.log("Available voices:", voices.length);
+    const englishVoice = voices.find(v => v.lang.startsWith('en-') && v.name.toLowerCase().includes('female')) 
+      || voices.find(v => v.lang.startsWith('en-US'))
       || voices.find(v => v.lang.startsWith('en'));
+    
     if (englishVoice) {
+      console.log("Using voice:", englishVoice.name);
       utterance.voice = englishVoice;
+    } else {
+      console.log("No English voice found, using default");
     }
 
+    utterance.onstart = () => {
+      console.log("Speech started");
+      setIsPlaying(true);
+    };
+
     utterance.onend = () => {
+      console.log("Speech ended");
       setIsPlaying(false);
       speechRef.current = null;
     };
 
-    utterance.onerror = () => {
+    utterance.onerror = (event) => {
+      console.error("Speech error:", event.error);
       setIsPlaying(false);
-      toast.error("Failed to play narration");
+      speechRef.current = null;
+      if (event.error !== 'canceled') {
+        toast.error("Failed to play narration: " + event.error);
+      }
     };
 
     speechRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
-    setIsPlaying(true);
-    toast.success("Playing narration...");
+    
+    // Small delay helps with Chrome
+    setTimeout(() => {
+      console.log("Speaking...");
+      window.speechSynthesis.speak(utterance);
+      toast.success("Playing narration...");
+    }, 100);
   };
 
   if (episodeLoading) {
