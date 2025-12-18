@@ -33,9 +33,9 @@ export default function Index() {
         )}
 
         <AuthorLocation 
-          city="Paris" 
-          country="France" 
-          nextDestination="Tokyo, Japan"
+          city="Kraków" 
+          country="Poland" 
+          nextEpisode="January 1, 2026"
         />
 
         {isLoading ? (

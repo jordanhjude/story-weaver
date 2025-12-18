@@ -1,12 +1,12 @@
-import { MapPin, Plane } from "lucide-react";
+import { MapPin, Calendar } from "lucide-react";
 
 interface AuthorLocationProps {
   city: string;
   country: string;
-  nextDestination?: string;
+  nextEpisode?: string;
 }
 
-export function AuthorLocation({ city, country, nextDestination }: AuthorLocationProps) {
+export function AuthorLocation({ city, country, nextEpisode }: AuthorLocationProps) {
   return (
     <section className="container py-12">
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/20 via-card to-primary/10 border border-primary/20 p-8">
@@ -24,11 +24,11 @@ export function AuthorLocation({ city, country, nextDestination }: AuthorLocatio
             </div>
           </div>
           
-          {nextDestination && (
+          {nextEpisode && (
             <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-background/50 border border-border">
-              <Plane className="w-5 h-5 text-primary" />
-              <span className="text-sm text-muted-foreground">Next stop:</span>
-              <span className="font-semibold text-foreground">{nextDestination}</span>
+              <Calendar className="w-5 h-5 text-primary" />
+              <span className="text-sm text-muted-foreground">Next Episode:</span>
+              <span className="font-semibold text-foreground">{nextEpisode}</span>
             </div>
           )}
         </div>
