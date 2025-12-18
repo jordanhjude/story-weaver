@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Book, Trophy, User, LogOut } from "lucide-react";
+import { Search, Book, Trophy, User, LogOut, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
@@ -69,6 +69,13 @@ export function Header() {
           >
             <Trophy className="h-4 w-4 text-primary" />
             Ranking
+          </Link>
+          <Link 
+            to="/books" 
+            className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <ShoppingBag className="h-4 w-4 text-primary" />
+            Books
           </Link>
         </nav>
 

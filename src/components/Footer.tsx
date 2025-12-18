@@ -18,7 +18,7 @@ export function Footer() {
           
           <div className="flex items-center gap-4">
             <a 
-              href="https://www.instagram.com/jjtales_/" 
+              href="https://instagram.com/jjtales_" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-muted-foreground hover:text-foreground transition-colors"

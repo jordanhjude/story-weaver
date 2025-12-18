@@ -313,9 +313,7 @@ export default function EpisodeReader() {
               {episode.title}
             </h2>
             <div className="flex items-center justify-center gap-4 text-muted-foreground text-sm">
-              <span>✦</span>
-              <span>{comic?.city}</span>
-              <span>✦</span>
+              <span className="h-8 w-px bg-primary/30" />
             </div>
           </header>
 
