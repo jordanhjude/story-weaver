@@ -105,12 +105,19 @@ export default function Contact() {
                 <span className="h-px flex-1 bg-border"></span>
               </h2>
               
-              <div className="p-6 rounded-xl bg-card border border-border">
-                <div className="flex items-center gap-3">
-                  <Mail className="h-5 w-5 text-primary" />
-                  <span className="text-muted-foreground">For inquiries, reach out via social media</span>
+              <a 
+                href="mailto:beatalestory@gmail.com"
+                className="group flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/50 hover:bg-card/80 transition-all duration-300"
+              >
+                <div className="p-3 rounded-full bg-primary/10 text-primary">
+                  <Mail size={24} />
                 </div>
-              </div>
+                <div className="flex-1">
+                  <p className="font-medium text-foreground group-hover:text-primary transition-colors">Email</p>
+                  <p className="text-sm text-muted-foreground">beatalestory@gmail.com</p>
+                </div>
+                <span className="text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all">→</span>
+              </a>
             </section>
           </div>
         </div>
