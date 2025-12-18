@@ -13,6 +13,7 @@ import Auth from "./pages/Auth";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
+import BookStore from "./pages/BookStore";
 import Admin from "./pages/Admin";
 import DonationSuccess from "./pages/DonationSuccess";
 import NotFound from "./pages/NotFound";
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/books" element={<BookStore />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/donation-success" element={<DonationSuccess />} />
           <Route path="*" element={<NotFound />} />

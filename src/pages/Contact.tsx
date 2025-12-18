@@ -25,7 +25,7 @@ export default function Contact() {
               
               <div className="grid gap-4">
                 <a 
-                  href="https://www.instagram.com/jjtales_/" 
+                  href="https://instagram.com/jjtales_"
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="group flex items-center gap-4 p-4 rounded-xl bg-card border border-border hover:border-primary/50 hover:bg-card/80 transition-all duration-300"
