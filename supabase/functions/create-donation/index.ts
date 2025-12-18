@@ -8,10 +8,10 @@ const corsHeaders = {
 
 // Donation price IDs mapping
 const DONATION_PRICES: Record<number, string> = {
-  5: "price_1SfHFECjkC1xxBRZuCCuuwHu",
-  10: "price_1SfHFjCjkC1xxBRZdAHTjwKG",
-  25: "price_1SfHFwCjkC1xxBRZ8XCOae7A",
-  50: "price_1SfHG8CjkC1xxBRZWkfmpjIz",
+  5: "price_1SfiUsCZscUwCgU6qgJpL6Dm",
+  10: "price_1SfiV8CZscUwCgU6rJBdxp7I",
+  25: "price_1SfiVJCZscUwCgU6uktRZ01h",
+  50: "price_1SfiVUCZscUwCgU6TB88etvx",
 };
 
 serve(async (req) => {
