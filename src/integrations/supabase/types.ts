@@ -135,6 +135,35 @@ export type Database = {
           },
         ]
       }
+      user_likes: {
+        Row: {
+          comic_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          comic_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          comic_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_likes_comic_id_fkey"
+            columns: ["comic_id"]
+            isOneToOne: false
+            referencedRelation: "comics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -165,6 +194,8 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_views: { Args: { comic_id: string }; Returns: undefined }
+      toggle_like: { Args: { p_comic_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"

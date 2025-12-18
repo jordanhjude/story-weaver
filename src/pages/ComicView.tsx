@@ -6,11 +6,67 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useComic, useEpisodes } from "@/hooks/useComicsDB";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ComicView() {
   const { id } = useParams();
   const { data: comic, isLoading: comicLoading } = useComic(id || "");
   const { data: episodes = [], isLoading: episodesLoading } = useEpisodes(id || "");
+  const [hasLiked, setHasLiked] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const queryClient = useQueryClient();
+
+  // Check auth and user like status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      
+      if (user && id) {
+        const { data } = await supabase
+          .from("user_likes")
+          .select("id")
+          .eq("user_id", user.id)
+          .eq("comic_id", id)
+          .maybeSingle();
+        setHasLiked(!!data);
+      }
+    };
+    checkAuth();
+  }, [id]);
+
+  // Increment views on page load
+  useEffect(() => {
+    if (id) {
+      supabase.rpc("increment_views", { comic_id: id });
+    }
+  }, [id]);
+
+  const handleLike = async () => {
+    if (!user) {
+      toast.error("Please sign in to like this story");
+      return;
+    }
+    if (!id || isLiking) return;
+
+    setIsLiking(true);
+    try {
+      const { data: liked, error } = await supabase.rpc("toggle_like", { p_comic_id: id });
+      if (error) throw error;
+      
+      setHasLiked(liked);
+      queryClient.invalidateQueries({ queryKey: ["comic", id] });
+      toast.success(liked ? "Added to your likes!" : "Removed from likes");
+    } catch (error) {
+      console.error("Like error:", error);
+      toast.error("Failed to update like");
+    } finally {
+      setIsLiking(false);
+    }
+  };
 
   if (comicLoading) {
     return (
@@ -52,6 +108,13 @@ export default function ComicView() {
     } else {
       toast.info("No episodes available yet");
     }
+  };
+
+  const formatCount = (count: number) => {
+    if (count >= 1000) {
+      return `${(count / 1000).toFixed(1)}K`;
+    }
+    return count.toString();
   };
 
   return (
@@ -111,12 +174,16 @@ export default function ComicView() {
               <div className="flex items-center gap-6 text-sm text-muted-foreground mb-6">
                 <div className="flex items-center gap-1.5">
                   <Eye className="h-4 w-4" />
-                  <span>{(comic.views / 1000).toFixed(0)}K views</span>
+                  <span>{formatCount(comic.views)} views</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <Heart className="h-4 w-4 text-red-500" />
-                  <span>{(comic.likes / 1000).toFixed(1)}K likes</span>
-                </div>
+                <button 
+                  onClick={handleLike}
+                  disabled={isLiking}
+                  className="flex items-center gap-1.5 hover:text-red-500 transition-colors disabled:opacity-50"
+                >
+                  <Heart className={`h-4 w-4 ${hasLiked ? "fill-red-500 text-red-500" : ""}`} />
+                  <span>{formatCount(comic.likes)} likes</span>
+                </button>
                 <div className="flex items-center gap-1.5">
                   <BookOpen className="h-4 w-4" />
                   <span>{episodes.length} episodes</span>
