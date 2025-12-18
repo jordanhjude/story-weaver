@@ -233,23 +233,26 @@ export default function EpisodeReader() {
   // Get pre-generated image if available
   const preGeneratedImage = comicId ? getEpisodeImage(comicId, epNum) : null;
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-gradient-to-b from-background via-background to-black/90">
+      {/* Ambient background effect */}
+      <div className="fixed inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent pointer-events-none" />
+      
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-        <div className="container flex items-center justify-between h-14">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border/50 shadow-lg shadow-black/10">
+        <div className="container flex items-center justify-between h-16">
           <Link to={`/tale/${comicId}`}>
-            <Button variant="ghost" size="sm" className="gap-2">
+            <Button variant="ghost" size="sm" className="gap-2 hover:bg-primary/10">
               <ArrowLeft className="h-4 w-4" />
-              Back
+              <span className="hidden sm:inline">Back to Tale</span>
             </Button>
           </Link>
           
           <div className="text-center">
-            <h1 className="text-sm font-medium truncate max-w-[200px]">
+            <h1 className="text-sm font-semibold truncate max-w-[200px] text-foreground">
               {comic?.title}
             </h1>
             <p className="text-xs text-muted-foreground">
-              Episode {epNum}: {episode.title}
+              Episode {epNum}
             </p>
           </div>
 
@@ -260,109 +263,145 @@ export default function EpisodeReader() {
               onClick={playNarration}
               disabled={isLoading}
               title={isPlaying ? "Stop narration" : "Listen to story"}
+              className="hover:bg-primary/10"
             >
               {isLoading ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin text-primary" />
               ) : isPlaying ? (
-                <VolumeX className="h-5 w-5" />
+                <VolumeX className="h-5 w-5 text-primary" />
               ) : (
                 <Volume2 className="h-5 w-5" />
               )}
             </Button>
             
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={goToPrev}
-              disabled={epNum <= 1}
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-            <span className="text-sm text-muted-foreground min-w-[60px] text-center">
-              {epNum} / {episodeCount}
-            </span>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={goToNext}
-              disabled={!episodeCount || epNum >= episodeCount}
-            >
-              <ChevronRight className="h-5 w-5" />
-            </Button>
+            <div className="flex items-center bg-muted/50 rounded-full px-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={goToPrev}
+                disabled={epNum <= 1}
+                className="h-8 w-8 hover:bg-primary/10"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="text-xs text-muted-foreground min-w-[50px] text-center font-medium">
+                {epNum} / {episodeCount}
+              </span>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={goToNext}
+                disabled={!episodeCount || epNum >= episodeCount}
+                className="h-8 w-8 hover:bg-primary/10"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Story Content */}
-      <main className="pt-14 pb-20">
-        <div className="max-w-2xl mx-auto px-4">
-          {/* Episode Title */}
-          <h2 className="text-2xl font-bold text-center py-8">
-            Episode {epNum}: {episode.title}
-          </h2>
+      <main className="pt-20 pb-28 relative">
+        <article className="max-w-2xl mx-auto px-6">
+          {/* Episode Title Card */}
+          <header className="text-center py-12 mb-8 animate-fade-in">
+            <span className="text-primary text-sm font-medium tracking-widest uppercase mb-3 block">
+              Episode {epNum}
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4 leading-tight">
+              {episode.title}
+            </h2>
+            <div className="flex items-center justify-center gap-4 text-muted-foreground text-sm">
+              <span>✦</span>
+              <span>{comic?.city}</span>
+              <span>✦</span>
+            </div>
+          </header>
 
           {/* Pre-generated Episode Image */}
           {preGeneratedImage && (
-            <figure className="my-8 flex justify-center">
-              <img 
-                src={preGeneratedImage}
-                alt={`Scene from ${episode.title}`}
-                className="w-full max-w-lg rounded-lg shadow-lg"
-                loading="lazy"
-              />
+            <figure className="my-12 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-2xl blur-xl opacity-50 group-hover:opacity-75 transition-opacity" />
+                <img 
+                  src={preGeneratedImage}
+                  alt={`Scene from ${episode.title}`}
+                  className="relative w-full rounded-xl shadow-2xl shadow-black/50 border border-border/50"
+                  loading="lazy"
+                />
+              </div>
+              <figcaption className="text-center text-muted-foreground text-sm mt-4 italic">
+                Scene from "{episode.title}"
+              </figcaption>
             </figure>
           )}
 
           {/* Fallback to AI Generation if no pre-generated image */}
           {!preGeneratedImage && scenePrompts.length > 0 && (
-            <figure className="my-8 flex justify-center">
+            <figure className="my-12">
               <StoryImage 
                 prompt={scenePrompts[0]}
                 fallbackUrl={existingImages[0]}
-                className="w-full max-w-lg"
+                className="w-full rounded-xl shadow-2xl"
                 alt="Opening scene"
               />
             </figure>
           )}
 
-          {/* Story paragraphs */}
-          {(() => {
-            const paragraphs = episode.content?.split('\n\n').filter((p: string) => p.trim()) || [];
-            
-            return paragraphs.map((paragraph: string, index: number) => (
-              <p key={`p-${index}`} className="text-foreground/90 leading-relaxed mb-6 text-base first-letter:text-3xl first-letter:font-bold first-letter:mr-1 first-letter:float-left">
-                {paragraph}
-              </p>
-            ));
-          })()}
+          {/* Story paragraphs with enhanced typography */}
+          <div className="prose prose-invert prose-lg max-w-none">
+            {(() => {
+              const paragraphs = episode.content?.split('\n\n').filter((p: string) => p.trim()) || [];
+              
+              return paragraphs.map((paragraph: string, index: number) => (
+                <p 
+                  key={`p-${index}`} 
+                  className="text-foreground/85 leading-[1.9] mb-8 text-[17px] animate-fade-in first:first-letter:text-5xl first:first-letter:font-serif first:first-letter:font-bold first:first-letter:text-primary first:first-letter:mr-2 first:first-letter:float-left first:first-letter:leading-none"
+                  style={{ animationDelay: `${0.2 + index * 0.05}s` }}
+                >
+                  {paragraph}
+                </p>
+              ));
+            })()}
+          </div>
 
           {/* End decoration */}
-          <div className="text-center py-8 text-muted-foreground">
-            <span className="text-2xl">✦ ✦ ✦</span>
-          </div>
-        </div>
+          <footer className="text-center py-16 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+            <div className="inline-flex items-center gap-3 text-primary/60">
+              <span className="h-px w-12 bg-gradient-to-r from-transparent to-primary/40" />
+              <span className="text-2xl">✦</span>
+              <span className="h-px w-12 bg-gradient-to-l from-transparent to-primary/40" />
+            </div>
+            <p className="text-muted-foreground text-sm mt-4">End of Episode {epNum}</p>
+          </footer>
+        </article>
       </main>
 
       {/* Bottom Navigation */}
-      <footer className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-t border-border">
-        <div className="container flex items-center justify-between h-16">
+      <footer className="fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-t border-border/50 shadow-[0_-10px_30px_-10px_rgba(0,0,0,0.3)]">
+        <div className="container flex items-center justify-between h-20 gap-4">
           <Button
             variant="outline"
             onClick={goToPrev}
             disabled={epNum <= 1}
-            className="gap-2"
+            className="flex-1 max-w-[180px] gap-2 h-12 border-border/50 hover:border-primary/50 hover:bg-primary/5"
           >
             <ChevronLeft className="h-4 w-4" />
-            Previous
+            <span className="hidden sm:inline">Previous</span>
           </Button>
+          
+          <div className="text-center">
+            <p className="text-xs text-muted-foreground">Episode {epNum} of {episodeCount}</p>
+          </div>
           
           <Button
             variant="outline"
             onClick={goToNext}
             disabled={!episodeCount || epNum >= episodeCount}
-            className="gap-2"
+            className="flex-1 max-w-[180px] gap-2 h-12 border-border/50 hover:border-primary/50 hover:bg-primary/5"
           >
-            Next
+            <span className="hidden sm:inline">Next</span>
             <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
