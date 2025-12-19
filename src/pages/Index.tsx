@@ -1,7 +1,10 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { HeroCarousel } from "@/components/HeroCarousel";
+import { HeroIntro } from "@/components/HeroIntro";
+import { WhyJJtales } from "@/components/WhyJJtales";
 import { ComicSection } from "@/components/ComicSection";
+import { SectionDivider } from "@/components/SectionDivider";
 import { AuthorLocation } from "@/components/AuthorLocation";
 import { SupportSection } from "@/components/SupportSection";
 import { useComicsDB } from "@/hooks/useComicsDB";
@@ -26,18 +29,19 @@ export default function Index() {
       <Header />
       
       <main className="flex-1">
+        {/* Hero Carousel */}
         {isLoading ? (
-          <div className="h-[500px] bg-card animate-pulse" />
+          <div className="h-[600px] bg-card animate-pulse" />
         ) : (
           <HeroCarousel comics={featured} />
         )}
 
-        <AuthorLocation 
-          city="Kraków" 
-          country="Poland" 
-          nextEpisode="January 1, 2026"
-        />
+        {/* Intro Section - The Hook */}
+        <HeroIntro />
 
+        <SectionDivider variant="dots" />
+
+        {/* Rising Stars - Setting the Stage */}
         {isLoading ? (
           <div className="container py-8">
             <Skeleton className="h-8 w-48 mb-6" />
@@ -48,28 +52,47 @@ export default function Index() {
             </div>
           </div>
         ) : (
-          <>
-            <ComicSection 
-              title="Rising Stars" 
-              comics={risingStars} 
-              seeAllLink="/tales?sort=views"
-            />
-            
-            <ComicSection 
-              title="Fan Favorites" 
-              comics={fanFavorites} 
-              seeAllLink="/tales?sort=likes"
-              variant="highlight"
-            />
-
-            <ComicSection 
-              title="New Releases" 
-              comics={newReleases} 
-              seeAllLink="/tales?sort=new"
-            />
-          </>
+          <ComicSection 
+            title="Rising Stars" 
+            comics={risingStars} 
+            seeAllLink="/tales?sort=views"
+          />
         )}
 
+        {/* Why JJtales - The Narrative */}
+        <WhyJJtales />
+
+        <SectionDivider variant="line" />
+
+        {/* Fan Favorites - Social Proof */}
+        {!isLoading && (
+          <ComicSection 
+            title="Fan Favorites" 
+            comics={fanFavorites} 
+            seeAllLink="/tales?sort=likes"
+            variant="highlight"
+          />
+        )}
+
+        {/* Author Location - Personal Connection */}
+        <AuthorLocation 
+          city="Kraków" 
+          country="Poland" 
+          nextEpisode="January 1, 2026"
+        />
+
+        <SectionDivider variant="gradient" />
+
+        {/* New Releases */}
+        {!isLoading && (
+          <ComicSection 
+            title="New Releases" 
+            comics={newReleases} 
+            seeAllLink="/tales?sort=new"
+          />
+        )}
+
+        {/* Support Section - CTA */}
         <SupportSection />
       </main>
 
