@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { HeroCarousel } from "@/components/HeroCarousel";
@@ -7,10 +8,18 @@ import { ComicSection } from "@/components/ComicSection";
 import { SectionDivider } from "@/components/SectionDivider";
 import { AuthorLocation } from "@/components/AuthorLocation";
 import { SupportSection } from "@/components/SupportSection";
+import { SplashIntro } from "@/components/SplashIntro";
 import { useComicsDB } from "@/hooks/useComicsDB";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const SPLASH_KEY = "jjtales_splash_seen";
+
 export default function Index() {
+  const [showSplash, setShowSplash] = useState(() => {
+    // Check if user has seen splash in this session
+    return !sessionStorage.getItem(SPLASH_KEY);
+  });
+
   const { 
     isLoading, 
     getFeaturedComics, 
@@ -23,6 +32,15 @@ export default function Index() {
   const risingStars = getRisingStars();
   const fanFavorites = getFanFavorites();
   const newReleases = getNewReleases();
+
+  const handleEnter = () => {
+    sessionStorage.setItem(SPLASH_KEY, "true");
+    setShowSplash(false);
+  };
+
+  if (showSplash) {
+    return <SplashIntro onEnter={handleEnter} />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
