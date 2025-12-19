@@ -41,7 +41,7 @@ export function HeroCarousel({ comics }: HeroCarouselProps) {
       {/* Main tagline at top */}
       <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20">
         <p className="text-sm md:text-base text-foreground/80 font-medium tracking-widest uppercase">
-          Real Tales From Every Corner of the Globe
+          Untold Tales From Every Corner of the Globe
         </p>
       </div>
 
