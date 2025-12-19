@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import { Clock } from "lucide-react";
 import { ArrowLeft, Heart, Eye, Share2, BookOpen } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -232,6 +233,20 @@ export default function ComicView() {
                     </span>
                   </Link>
                 ))}
+                
+                {/* Coming Soon Episode 2 */}
+                <div className="flex items-center justify-between p-4 bg-card/50 rounded-lg border border-dashed border-border opacity-70">
+                  <div className="flex items-center gap-4">
+                    <span className="text-muted-foreground text-sm w-12">
+                      Ep. 2
+                    </span>
+                    <span className="font-medium text-muted-foreground">Coming Soon...</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-primary">
+                    <Clock className="h-3 w-3" />
+                    <span>January 1, 2026</span>
+                  </div>
+                </div>
               </div>
             )}
           </div>
