@@ -20,7 +20,7 @@ export function HeroIntro() {
 
           {/* Main headline */}
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-            <span className="text-foreground">Real Tales That</span>{" "}
+            <span className="text-foreground">Untold Tales That</span>{" "}
             <span className="text-gradient">Move You</span>
           </h2>
 

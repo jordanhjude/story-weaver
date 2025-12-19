@@ -42,7 +42,7 @@ export function SplashIntro({ onEnter }: SplashIntroProps) {
           className="mt-6 text-lg md:text-xl text-muted-foreground animate-fade-in"
           style={{ animationDelay: "0.8s", animationFillMode: "both" }}
         >
-          Real Tales From Every Corner of the Globe
+          Untold Tales From Every Corner of the Globe
         </p>
 
         {/* Enter prompt */}
