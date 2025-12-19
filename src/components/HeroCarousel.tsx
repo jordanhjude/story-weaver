@@ -28,48 +28,68 @@ export function HeroCarousel({ comics }: HeroCarouselProps) {
   const current = comics[currentIndex];
 
   return (
-    <section className="relative h-[500px] md:h-[550px] overflow-hidden">
-      {/* Background Image */}
+    <section className="relative h-[600px] md:h-[700px] overflow-hidden">
+      {/* Background Image with enhanced overlay */}
       <div 
-        className="absolute inset-0 bg-cover bg-center transition-all duration-700"
+        className="absolute inset-0 bg-cover bg-center transition-all duration-1000 scale-105"
         style={{ backgroundImage: `url(${current.banner_image || current.cover_image})` }}
       >
-        <div className="absolute inset-0 gradient-hero" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-transparent to-transparent" />
+      </div>
+
+      {/* Main tagline at top */}
+      <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20">
+        <p className="text-sm md:text-base text-foreground/80 font-medium tracking-widest uppercase">
+          Real Tales From Every Corner of the Globe
+        </p>
       </div>
 
       {/* Content */}
-      <div className="relative container h-full flex items-center">
-        <div className="max-w-lg animate-slide-in" key={current.id}>
-          <div className="flex gap-2 mb-4">
+      <div className="relative container h-full flex items-center pt-16">
+        <div className="max-w-2xl animate-slide-in" key={current.id}>
+          {/* Genre badges */}
+          <div className="flex flex-wrap gap-2 mb-6">
             {current.genres?.map((genre) => (
               <Badge 
                 key={genre} 
                 variant="secondary" 
-                className="bg-secondary/80 text-foreground text-xs capitalize"
+                className="bg-primary/20 text-primary border border-primary/30 text-xs capitalize px-3 py-1"
               >
                 {genre}
               </Badge>
             ))}
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-black mb-3 leading-tight">
+          {/* Title with dramatic styling */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-4 leading-[1.1] tracking-tight">
             {current.title}
           </h1>
 
-          <div className="flex items-center gap-2 mb-4">
-            <MapPin className="w-4 h-4 text-primary" />
-            <span className="text-foreground font-medium">Written in {current.city}</span>
+          {/* Location with enhanced styling */}
+          <div className="flex items-center gap-2 mb-6">
+            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+              <MapPin className="w-4 h-4 text-primary" />
+            </div>
+            <span className="text-foreground/90 font-medium">Written in {current.city}</span>
           </div>
           
-          <p className="text-muted-foreground text-sm md:text-base mb-6 line-clamp-3">
+          {/* Description with better typography */}
+          <p className="text-muted-foreground text-base md:text-lg mb-8 line-clamp-3 leading-relaxed max-w-xl">
             {current.description}
           </p>
           
-          <Link to={`/tale/${current.id}`}>
-            <Button size="lg" className="gradient-primary text-primary-foreground font-semibold px-8">
-              Read now
-            </Button>
-          </Link>
+          {/* Enhanced CTA */}
+          <div className="flex items-center gap-4">
+            <Link to={`/tale/${current.id}`}>
+              <Button size="lg" className="gradient-primary text-primary-foreground font-semibold px-10 py-6 text-base shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-shadow">
+                Read This Story
+              </Button>
+            </Link>
+            <span className="text-sm text-muted-foreground">
+              {current.episode_count || 0} Episodes
+            </span>
+          </div>
         </div>
       </div>
 
