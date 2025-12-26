@@ -46,24 +46,18 @@ export function StoryInteractions({ storyId }: StoryInteractionsProps) {
   }, [storyId, user]);
 
   const fetchLikes = async () => {
-    // Get total likes count
-    const { count } = await supabase
-      .from("story_likes")
-      .select("*", { count: "exact", head: true })
-      .eq("story_id", storyId);
+    // Use secure function to get likes count (doesn't expose user_ids)
+    const { data: countData } = await supabase
+      .rpc("get_story_likes_count", { p_story_id: storyId });
     
-    setLikesCount(count || 0);
+    setLikesCount(countData || 0);
 
-    // Check if current user has liked
+    // Use secure function to check if current user has liked
     if (user) {
-      const { data } = await supabase
-        .from("story_likes")
-        .select("id")
-        .eq("story_id", storyId)
-        .eq("user_id", user.id)
-        .maybeSingle();
+      const { data: hasLikedData } = await supabase
+        .rpc("user_has_liked_story", { p_story_id: storyId });
       
-      setHasLiked(!!data);
+      setHasLiked(!!hasLikedData);
     }
   };
 
