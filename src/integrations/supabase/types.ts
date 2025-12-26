@@ -238,6 +238,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_story_comments: {
+        Args: { p_story_id: string }
+        Returns: {
+          author_name: string
+          content: string
+          created_at: string
+          id: string
+          is_owner: boolean
+        }[]
+      }
       get_story_likes_count: { Args: { p_story_id: string }; Returns: number }
       has_role: {
         Args: {
