@@ -109,7 +109,21 @@ export function StoryInteractions({ storyId }: StoryInteractionsProps) {
       return;
     }
 
-    if (!newComment.trim()) return;
+    const trimmedComment = newComment.trim();
+    
+    // Input validation
+    if (!trimmedComment) {
+      toast.error("Comment cannot be empty");
+      return;
+    }
+    
+    if (trimmedComment.length > 2000) {
+      toast.error("Comment must be less than 2000 characters");
+      return;
+    }
+
+    // Sanitize author name
+    const authorName = user.email?.split("@")[0]?.substring(0, 50) || "Reader";
 
     setIsSubmitting(true);
     try {
@@ -118,8 +132,8 @@ export function StoryInteractions({ storyId }: StoryInteractionsProps) {
         .insert({
           story_id: storyId,
           user_id: user.id,
-          content: newComment.trim(),
-          author_name: user.email?.split("@")[0] || "Reader",
+          content: trimmedComment.substring(0, 2000),
+          author_name: authorName,
         });
 
       if (error) throw error;
