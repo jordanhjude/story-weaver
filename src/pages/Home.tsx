@@ -85,7 +85,7 @@ export default function Home() {
       </section>
       
       {/* Author Location */}
-      <AuthorLocation city="Somewhere" country="in a city near you" />
+      <AuthorLocation city="Kraków" country="Poland" />
       
       {/* Description */}
       <section className="py-16 border-y border-border/20">
