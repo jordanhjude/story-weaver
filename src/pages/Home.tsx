@@ -7,44 +7,44 @@ import { SupportSection } from "@/components/SupportSection";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 
-// Import story images
-import velvetNightsImg from "@/assets/stories/velvet-nights.jpg";
-import whispersLibraryImg from "@/assets/stories/whispers-library.jpg";
-import secretLetterImg from "@/assets/stories/secret-letter.jpg";
-import moonlightRendezvousImg from "@/assets/stories/moonlight-rendezvous.jpg";
+// Import Kraków story images
+import krakowVelvetImg from "@/assets/stories/krakow-velvet-nights.jpg";
+import krakowLibraryImg from "@/assets/stories/krakow-library.jpg";
+import krakowLetterImg from "@/assets/stories/krakow-letter.jpg";
+import krakowMoonlightImg from "@/assets/stories/krakow-moonlight.jpg";
 
 const featuredStories = [
   {
-    id: "velvet-nights",
-    title: "Velvet Nights",
-    excerpt: "She never expected to find him waiting in the garden, beneath the same jasmine that witnessed their first meeting years ago...",
+    id: "rynek-nights",
+    title: "Rynek Nights",
+    excerpt: "Under the glow of the Sukiennice, she saw him again—the stranger from the café who had vanished three years ago without a word...",
     readingTime: "12 min",
-    themes: ["Romance", "Reunion"],
-    image: velvetNightsImg,
+    themes: ["Reunion", "Main Square"],
+    image: krakowVelvetImg,
   },
   {
-    id: "whispers-library",
-    title: "Whispers in the Library",
-    excerpt: "Their fingers brushed reaching for the same book. In that moment, surrounded by centuries of love stories, they began their own...",
+    id: "jagiellonian-secrets",
+    title: "Jagiellonian Secrets",
+    excerpt: "In the ancient halls of the university, their hands touched reaching for the same forbidden manuscript. Some stories are meant to be shared...",
     readingTime: "8 min",
-    themes: ["Longing", "Connection"],
-    image: whispersLibraryImg,
+    themes: ["Academia", "Longing"],
+    image: krakowLibraryImg,
   },
   {
-    id: "secret-letter",
-    title: "The Secret Letter",
-    excerpt: "Folded between the pages of her grandmother's journal, she found words that would change how she understood love forever...",
+    id: "kazimierz-letters",
+    title: "Letters from Kazimierz",
+    excerpt: "Hidden in a vintage shop on Szeroka Street, she found letters addressed to a woman with her name, written fifty years before she was born...",
     readingTime: "15 min",
-    themes: ["Mystery", "Passion"],
-    image: secretLetterImg,
+    themes: ["Mystery", "Jewish Quarter"],
+    image: krakowLetterImg,
   },
   {
-    id: "moonlight-rendezvous",
-    title: "Moonlight Rendezvous",
-    excerpt: "The terrace overlooked the sleeping city. He had come here every night for a month, hoping she would appear once more...",
+    id: "wawel-moonlight",
+    title: "Wawel Moonlight",
+    excerpt: "Every night he waited on the castle terrace, watching the Vistula flow, hoping she would return to the place where they first kissed...",
     readingTime: "10 min",
-    themes: ["Desire", "Hope"],
-    image: moonlightRendezvousImg,
+    themes: ["Desire", "Castle"],
+    image: krakowMoonlightImg,
   },
 ];
 
@@ -58,15 +58,15 @@ export default function Home() {
         <div className="reading-container">
           <div className="max-w-2xl animate-fade-in-up">
             <p className="text-sm text-muted-foreground font-body uppercase tracking-widest mb-4 opacity-70">
-              Written anonymously from cities around the world
+              Anonymous tales from Kraków, Poland
             </p>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight tracking-wide">
-              Where romance lives in the streets.
+              Where romance echoes through ancient streets.
             </h1>
             
             <p className="mt-8 text-lg text-muted-foreground font-body leading-relaxed opacity-0 animate-fade-in-up delay-200">
-              Intimate stories of connection, desire, and the quiet moments 
-              that unfold when strangers become something more.
+              Intimate stories of connection and desire, all born from 
+              the cobblestones, cafés, and hidden corners of Kraków.
             </p>
             
             <div className="mt-12 opacity-0 animate-fade-in-up delay-300">
@@ -91,12 +91,12 @@ export default function Home() {
       <section className="py-16 border-y border-border/20">
         <div className="reading-container">
           <p className="text-lg md:text-xl text-muted-foreground font-body leading-relaxed max-w-2xl">
-            I write from cafés, hotel rooms, and park benches. The cities change, 
-            but the stories remain—whispered confessions of attraction, forbidden 
-            glances across crowded rooms, and the electric tension of almost.
+            I write from the corner table at Café Camelot, from benches along the Planty, 
+            from windows overlooking the Rynek. Every story here was born in Kraków—
+            whispered in its churches, felt on its bridges, lived in its secrets.
           </p>
           <p className="mt-6 text-muted-foreground/70 font-body italic">
-            You won't know my name. But you'll recognize the feelings.
+            You won't know my name. But you'll know this city through my eyes.
           </p>
         </div>
       </section>
@@ -105,7 +105,7 @@ export default function Home() {
       <section className="py-24">
         <div className="wide-container">
           <h2 className="font-serif text-2xl text-foreground mb-12 tracking-wide">
-            Featured Stories
+            Stories from Kraków
           </h2>
           
           <div className="grid md:grid-cols-2 gap-8">
@@ -139,7 +139,7 @@ export default function Home() {
             Join the Inner Circle
           </h2>
           <p className="text-muted-foreground font-body mb-8 max-w-md mx-auto">
-            Receive new stories and exclusive content. No spam, just whispers.
+            Receive new Kraków stories and exclusive content. No spam, just whispers.
           </p>
           
           <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
