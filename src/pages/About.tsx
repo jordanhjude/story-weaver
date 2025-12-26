@@ -17,25 +17,27 @@ export default function About() {
             
             <div className="space-y-6 text-muted-foreground font-body leading-relaxed">
               <p className="text-lg italic text-foreground/90">
-                I am a writer. You don't know my name, and that's intentional.
+                I am a writer. You will never know my name. That is the point.
               </p>
               
               <p>
                 City of Whispers is a collection of anonymous stories about romance 
-                and intimacy—the kind that unfolds in city streets, dimly lit bars, 
-                rooftop terraces, and quiet hotel rooms.
+                and intimacy—the kind that breathes in shadowed alleyways, flickers 
+                in dimly lit cafés, lingers on quiet hotel terraces, and hides in 
+                the glow of city nights.
               </p>
               
               <p>
-                I travel. I observe. I write. Every city has its own rhythm of desire, 
-                its own language of glances and gestures that strangers exchange 
-                before they become something more.
+                I move through cities unseen. I watch. I listen. I write. Every city 
+                has its own rhythm of desire, its own secret language of glances, 
+                fleeting touches, and silent invitations that strangers exchange 
+                before becoming something more.
               </p>
               
               <p>
-                These stories are for adults who understand that intimacy is more 
-                than physical—it's the tension before the touch, the words left 
-                unspoken, the what-ifs that linger long after.
+                These stories are for adults who understand that intimacy is never 
+                only physical—it's the tension in a shared glance, the words that 
+                are never spoken, the "what-ifs" that linger long after a passing encounter.
               </p>
               
               <p className="text-foreground/80 font-medium">
@@ -52,8 +54,8 @@ export default function About() {
                 Anonymous Author
               </h3>
               <p className="text-muted-foreground font-body text-sm leading-relaxed">
-                The writer remains unknown. The stories speak for themselves, 
-                unburdened by identity or expectation.
+                The writer remains unseen. The stories speak for themselves—unburdened 
+                by identity, expectation, or pretense.
               </p>
             </div>
             
@@ -63,8 +65,8 @@ export default function About() {
                 Emotional Intimacy
               </h3>
               <p className="text-muted-foreground font-body text-sm leading-relaxed">
-                Stories that explore the full spectrum of romantic emotion, 
-                from tender beginnings to passionate intensity.
+                Every tale explores the full spectrum of desire, from tender hesitation 
+                to the heat of unspoken passion.
               </p>
             </div>
             
@@ -74,19 +76,19 @@ export default function About() {
                 Urban Settings
               </h3>
               <p className="text-muted-foreground font-body text-sm leading-relaxed">
-                Every story is born from a city—its cafés, streets, 
-                and the strangers who pass through them.
+                Every story is born from a city—the cafés, streets, rooftops, and secret 
+                corners where strangers brush past, leaving traces of longing behind.
               </p>
             </div>
             
             <div className="space-y-4 opacity-0 animate-fade-in-up delay-400">
               <Shield className="w-6 h-6 text-rose" />
               <h3 className="font-serif text-lg text-foreground tracking-wide">
-                Respectful Content
+                Consent and Connection
               </h3>
               <p className="text-muted-foreground font-body text-sm leading-relaxed">
-                All narratives center on consent, respect, and genuine 
-                connections between characters.
+                All narratives center on mutual desire, consent, and genuine emotional 
+                connection between characters.
               </p>
             </div>
           </div>
@@ -97,12 +99,12 @@ export default function About() {
               Reach the Author
             </h2>
             <p className="text-muted-foreground font-body leading-relaxed">
-              For inquiries or to share your own city whisper, reach out at{" "}
+              If you have a story to share or a city whisper to submit, write to{" "}
               <a 
-                href="mailto:whispers@cityofwhispers.com" 
+                href="mailto:beatalestory@gmail.com" 
                 className="text-rose hover:text-rose/80 transition-colors story-link"
               >
-                whispers@cityofwhispers.com
+                beatalestory@gmail.com
               </a>
             </p>
             <p className="text-muted-foreground/60 font-body text-sm mt-2 italic">
