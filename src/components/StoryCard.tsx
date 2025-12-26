@@ -9,20 +9,33 @@ interface StoryCardProps {
   excerpt: string;
   readingTime: string;
   themes?: string[];
+  image?: string;
   className?: string;
   style?: CSSProperties;
 }
 
-export function StoryCard({ id, title, excerpt, readingTime, themes, className, style }: StoryCardProps) {
+export function StoryCard({ id, title, excerpt, readingTime, themes, image, className, style }: StoryCardProps) {
   return (
     <article 
       className={cn(
-        "group p-8 bg-card/50 border border-border/30 hover:border-rose/30 transition-all duration-500 hover:romantic-glow",
+        "group overflow-hidden bg-card/50 border border-border/30 hover:border-rose/30 transition-all duration-500 hover:romantic-glow",
         className
       )}
       style={style}
     >
-      <div className="space-y-4">
+      {/* Image */}
+      {image && (
+        <div className="relative h-48 overflow-hidden">
+          <img 
+            src={image} 
+            alt={title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
+        </div>
+      )}
+      
+      <div className="p-8 space-y-4">
         {/* Themes */}
         {themes && themes.length > 0 && (
           <div className="flex gap-3">

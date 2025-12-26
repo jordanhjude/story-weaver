@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logoImage from "@/assets/logo-city-whispers.png";
 
 export function SiteFooter() {
   return (
@@ -7,8 +8,15 @@ export function SiteFooter() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
           {/* Brand */}
           <div className="space-y-3">
-            <Link to="/" className="font-serif text-lg tracking-wide text-foreground hover:text-rose transition-colors">
-              City of Whispers
+            <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <img 
+                src={logoImage} 
+                alt="City of Whispers" 
+                className="w-8 h-8 object-contain"
+              />
+              <span className="font-serif text-lg tracking-wide text-foreground">
+                City of Whispers
+              </span>
             </Link>
             <p className="text-sm text-muted-foreground italic font-body">
               Anonymous tales of romance from the city.

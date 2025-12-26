@@ -7,6 +7,12 @@ import { SupportSection } from "@/components/SupportSection";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 
+// Import story images
+import velvetNightsImg from "@/assets/stories/velvet-nights.jpg";
+import whispersLibraryImg from "@/assets/stories/whispers-library.jpg";
+import secretLetterImg from "@/assets/stories/secret-letter.jpg";
+import moonlightRendezvousImg from "@/assets/stories/moonlight-rendezvous.jpg";
+
 const featuredStories = [
   {
     id: "velvet-nights",
@@ -14,6 +20,7 @@ const featuredStories = [
     excerpt: "She never expected to find him waiting in the garden, beneath the same jasmine that witnessed their first meeting years ago...",
     readingTime: "12 min",
     themes: ["Romance", "Reunion"],
+    image: velvetNightsImg,
   },
   {
     id: "whispers-library",
@@ -21,6 +28,7 @@ const featuredStories = [
     excerpt: "Their fingers brushed reaching for the same book. In that moment, surrounded by centuries of love stories, they began their own...",
     readingTime: "8 min",
     themes: ["Longing", "Connection"],
+    image: whispersLibraryImg,
   },
   {
     id: "secret-letter",
@@ -28,6 +36,7 @@ const featuredStories = [
     excerpt: "Folded between the pages of her grandmother's journal, she found words that would change how she understood love forever...",
     readingTime: "15 min",
     themes: ["Mystery", "Passion"],
+    image: secretLetterImg,
   },
   {
     id: "moonlight-rendezvous",
@@ -35,6 +44,7 @@ const featuredStories = [
     excerpt: "The terrace overlooked the sleeping city. He had come here every night for a month, hoping she would appear once more...",
     readingTime: "10 min",
     themes: ["Desire", "Hope"],
+    image: moonlightRendezvousImg,
   },
 ];
 

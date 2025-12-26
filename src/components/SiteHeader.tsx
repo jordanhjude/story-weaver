@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import logoImage from "@/assets/logo-city-whispers.png";
 
 const navItems = [
   { to: "/stories", label: "Stories" },
@@ -15,14 +16,21 @@ export function SiteHeader() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/30">
-      <nav className="reading-container py-6">
+      <nav className="reading-container py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link 
             to="/" 
-            className="font-serif text-xl tracking-wide text-foreground hover:text-rose transition-colors duration-300"
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity duration-300"
           >
-            City of Whispers
+            <img 
+              src={logoImage} 
+              alt="City of Whispers" 
+              className="w-10 h-10 object-contain"
+            />
+            <span className="font-serif text-xl tracking-wide text-foreground">
+              City of Whispers
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
