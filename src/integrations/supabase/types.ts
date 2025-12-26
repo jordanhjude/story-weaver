@@ -238,6 +238,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_story_likes_count: { Args: { p_story_id: string }; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -247,6 +248,7 @@ export type Database = {
       }
       increment_views: { Args: { comic_id: string }; Returns: undefined }
       toggle_like: { Args: { p_comic_id: string }; Returns: boolean }
+      user_has_liked_story: { Args: { p_story_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
