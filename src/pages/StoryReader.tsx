@@ -1,201 +1,207 @@
-import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { supabase } from "@/integrations/supabase/client";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Clock, Heart } from "lucide-react";
 
-interface Story {
-  id: string;
+// Sample story content
+const stories: Record<string, {
   title: string;
-  description: string | null;
-  genres: string[] | null;
-}
-
-interface Episode {
-  id: string;
-  title: string;
-  content: string | null;
-  episode_number: number;
-}
+  themes: string[];
+  readingTime: string;
+  content: string[];
+}> = {
+  "velvet-nights": {
+    title: "Velvet Nights",
+    themes: ["Romance", "Reunion"],
+    readingTime: "12 min",
+    content: [
+      "The garden had changed in five years, but the jasmine remained. Its scent drifted through the evening air as Elena pushed open the iron gate, her heart beating a rhythm she thought she had forgotten.",
+      "She hadn't expected to return here. The invitation had arrived without explanation—a cream envelope, her name written in a hand she recognized immediately. Just an address. Just a time. Just enough to make her remember everything.",
+      "The stone path curved beneath ancient oaks, their branches forming a canopy that filtered the last light of day into something softer, more forgiving. She had walked this path before, in another life, when love seemed simple and forever was a word they used without understanding.",
+      "He stood by the fountain, exactly where she knew he would be. Time had touched him gently—silver at his temples, a certain gravity in his stance—but his eyes, when they met hers, held the same warmth that had once made her believe anything was possible.",
+      "\"You came,\" he said. Not a question. A statement of wonder.",
+      "\"I came.\" She stopped three steps away, close enough to see the slight tremor in his hands, far enough to maintain the distance years had built. \"Your letter didn't explain why.\"",
+      "\"Some things can't be written.\" He gestured to the garden around them. \"I wanted you to remember.\"",
+      "\"I never forgot.\" The words escaped before she could stop them, carrying more truth than she had intended to reveal.",
+      "The fountain whispered behind him, water falling in patterns she had once traced with her fingers while he read poetry aloud. How young they had been. How certain.",
+      "\"I should have followed you,\" he said. \"When you left. I should have come after you.\"",
+      "\"Would it have changed anything?\"",
+      "\"Everything. Nothing.\" A ghost of a smile crossed his face. \"I've thought about that night every day since. What I should have said. What I should have done differently.\"",
+      "Elena felt the weight of years pressing against her chest—years of building a life elsewhere, of learning to breathe without thinking of him, of convincing herself that some loves were meant to remain unfinished.",
+      "\"We were different people then,\" she said.",
+      "\"Were we?\" He took a step closer, and the scent of jasmine intensified, mixing with something she remembered as uniquely his. \"Or are we finally old enough to be who we were always meant to become?\"",
+      "The question hung between them like the last note of a song neither wanted to end. Around them, the garden held its breath, waiting for an answer that had been five years in the making.",
+      "She closed her eyes and let herself remember: the first time he had taken her hand in this very spot, the first time they had danced without music, the first time she had understood that love could be both the simplest and most complicated thing in the world.",
+      "When she opened them again, he was there—patient, hopeful, unchanged in all the ways that mattered.",
+      "\"I'm not the same woman who left,\" she warned him.",
+      "\"Good.\" His smile reached his eyes this time. \"Neither am I the same man who let you go.\"",
+      "Somewhere in the darkness, a nightingale began to sing. Elena took the final step, closing the distance that time and fear had built, and felt his arms fold around her with a certainty that needed no words.",
+      "The jasmine bloomed on, witness to what had been and what was yet to come.",
+    ],
+  },
+  "whispers-library": {
+    title: "Whispers in the Library",
+    themes: ["Longing", "Connection"],
+    readingTime: "8 min",
+    content: [
+      "The library closed at nine, but she always stayed until the lights flickered their final warning. There was something sacred about the hour between closing and leaving—the way sound softened, the way the shelves seemed to breathe.",
+      "Tonight, however, she was not alone.",
+      "He appeared in the poetry section, reaching for the same volume her fingers had just touched. Their hands met on the spine of Neruda, and neither pulled away.",
+      "\"I'm sorry,\" he said, though his eyes held no apology. They held curiosity, and something warmer. \"You were here first.\"",
+      "\"We can share.\" The words left her mouth before wisdom could intervene. \"I mean—\" She felt heat rise to her cheeks. \"I was only going to read a few pages.\"",
+      "\"Which ones?\"",
+      "\"The love sonnets. I always come back to them when...\" She trailed off, unwilling to finish the sentence, to admit why she sought comfort in verses about longing.",
+      "He nodded as if he understood completely. \"May I sit with you? The chairs by the window have the best light this time of evening.\"",
+      "They sat across from each other as the library emptied around them, passing the book back and forth, reading aloud in voices barely above whispers. His accent wrapped around the Spanish phrases like something precious, something sacred.",
+      "\"You know these poems well,\" she observed.",
+      "\"My grandmother used to read them to me. Before she passed, she said they contained every truth about love worth knowing.\" He paused. \"I think she was right.\"",
+      "The lights flickered—five minutes until closing. Neither moved.",
+      "\"What brings you here tonight?\" she asked. \"To this particular section, this particular book?\"",
+      "\"Honestly?\" His smile was shy, unexpected. \"I saw you here last Tuesday. And the Tuesday before that. I've been trying to find the courage to reach for whatever book you reached for.\"",
+      "Her heart performed a small revolution. \"You came for the poetry? Or for me?\"",
+      "\"I came hoping they might be the same thing.\"",
+      "The lights flickered again, more insistently. A librarian's footsteps approached in the distance.",
+      "\"We should go,\" she said, though every part of her wished to stay.",
+      "\"Yes.\" He closed the book gently, reverently. \"But tomorrow is Wednesday. And the library is open until nine.\"",
+      "\"It is.\"",
+      "\"Then perhaps,\" he said, standing and offering his hand to help her rise, \"we might continue where we left off.\"",
+      "She took his hand, and the touch felt like the beginning of a poem she had been waiting her whole life to read.",
+    ],
+  },
+  "secret-letter": {
+    title: "The Secret Letter",
+    themes: ["Mystery", "Passion"],
+    readingTime: "15 min",
+    content: [
+      "The letter fell from between the pages of her grandmother's journal, yellowed with age but perfectly preserved. No envelope. No date. Just words in a hand she didn't recognize, addressed to a woman she thought she knew.",
+      "My dearest Catherine, it began. Even now, decades later, I cannot forget the summer we met...",
+      "Claire sat in the attic of the old house, dust motes floating in the afternoon light, and read the words meant for someone else. With each line, the grandmother she had known—proper, reserved, widowed young—transformed into someone entirely different.",
+      "The letter spoke of secret meetings in a garden maze, of conversations that lasted until dawn, of a love that burned with such intensity it frightened them both. It spoke of a choice made one autumn night, and a goodbye that was never truly spoken.",
+      "I think of you still, the writer confessed. In every sunset that reminds me of your hair, in every melody that recalls your laugh, in every silence that holds your name. I think of you, and I wonder if choosing duty over love was wisdom or the greatest cowardice of my life.",
+      "The letter was signed simply: Yours, in all the ways that matter. M.",
+      "Claire turned the paper over, searching for more, but there was nothing. Just these words, hidden for God knew how long, preserved by a woman who had lived out her days in apparent solitude.",
+      "Who was M? Had her grandmother loved and lost before—or instead of—the grandfather Claire had never met? What had happened to the garden maze, to the dawn conversations, to the love that burned?",
+      "She spent the next three weeks excavating the attic, searching for answers. More letters appeared—a dozen in total, spanning a single summer fifty years past. They painted a portrait of two people caught between passion and propriety, between what they wanted and what the world demanded.",
+      "The final letter was different. Shorter. Stained with what might have been tears.",
+      "Tomorrow, you marry him. Tomorrow, I leave for the continent. Tomorrow, we become the people we agreed to be, rather than the people we wished we could become. But tonight—tonight, I will stand beneath your window one last time. If you look out, I will know that what we had was real. If the curtain stays closed, I will understand, and I will never write to you again.",
+      "Claire set down the letter with shaking hands. Had her grandmother looked? Had she watched M walk away, or had she kept the curtain closed, choosing the safer path?",
+      "In the bottom of the trunk, beneath the letters, she found a faded photograph. Two figures in a garden—a young woman who was unmistakably her grandmother, and a man whose face had been carefully, deliberately obscured.",
+      "Some mysteries, Claire realized, were meant to remain unsolved. Some loves existed only in the spaces between words, preserved in hidden letters, carried in hearts that never forgot.",
+      "She gathered the letters carefully, tying them with a ribbon that might have been original, and placed them back where they had rested for half a century. Some secrets deserved their peace.",
+      "But as she descended the attic stairs, she found herself wondering about her own life, about the letters she might one day leave behind, about the loves that burned and the choices yet to be made.",
+    ],
+  },
+};
 
 export default function StoryReader() {
   const { id } = useParams();
-  const [story, setStory] = useState<Story | null>(null);
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [currentEpisode, setCurrentEpisode] = useState<Episode | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
-
-  useEffect(() => {
-    async function fetchStory() {
-      if (!id) return;
-      
-      const { data: storyData } = await supabase
-        .from("comics")
-        .select("*")
-        .eq("id", id)
-        .single();
-      
-      const { data: episodesData } = await supabase
-        .from("episodes")
-        .select("*")
-        .eq("comic_id", id)
-        .order("episode_number", { ascending: true });
-      
-      setStory(storyData);
-      setEpisodes(episodesData || []);
-      setCurrentEpisode(episodesData?.[0] || null);
-      setIsLoading(false);
-    }
-    
-    fetchStory();
-  }, [id]);
-
+  
+  const story = stories[id || "velvet-nights"];
+  
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-      setScrollProgress(progress);
+      const progress = (scrollTop / docHeight) * 100;
+      setScrollProgress(Math.min(progress, 100));
     };
-
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // Calculate reading time
-  const readingTime = currentEpisode?.content 
-    ? Math.max(5, Math.floor(currentEpisode.content.length / 1000))
-    : 5;
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background">
-        <SiteHeader />
-        <main className="pt-24">
-          <div className="reading-container py-16">
-            <Skeleton className="h-10 w-3/4 mb-4 bg-muted" />
-            <Skeleton className="h-4 w-1/4 mb-12 bg-muted" />
-            <div className="space-y-4">
-              {[...Array(8)].map((_, i) => (
-                <Skeleton key={i} className="h-4 w-full bg-muted" />
-              ))}
-            </div>
-          </div>
-        </main>
-      </div>
-    );
-  }
-
+  
   if (!story) {
     return (
-      <div className="min-h-screen bg-background">
-        <SiteHeader />
-        <main className="pt-24">
-          <div className="reading-container py-32 text-center">
-            <h1 className="font-serif text-2xl text-foreground mb-4">Story not found</h1>
-            <Link to="/stories" className="text-muted-foreground hover:text-foreground transition-colors">
-              ← Back to stories
-            </Link>
-          </div>
-        </main>
-        <SiteFooter />
+      <div className="min-h-screen bg-background velvet-texture flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="font-serif text-2xl text-foreground mb-4">Story not found</h1>
+          <Link to="/stories" className="text-rose hover:text-rose/80">
+            Return to all stories
+          </Link>
+        </div>
       </div>
     );
   }
-
+  
   return (
-    <div className="min-h-screen bg-background">
-      {/* Progress indicator */}
-      <div 
-        className="fixed top-0 left-0 h-px bg-blood z-[60] transition-all duration-150"
-        style={{ width: `${scrollProgress}%` }}
-      />
+    <div className="min-h-screen bg-background velvet-texture">
+      {/* Progress bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-0.5 bg-border/30">
+        <div 
+          className="h-full bg-rose transition-all duration-150"
+          style={{ width: `${scrollProgress}%` }}
+        />
+      </div>
       
       <SiteHeader />
       
-      <main className="pt-24">
-        {/* Story Header */}
-        <header className="reading-container py-16 border-b border-border/30">
+      <main className="pt-32 pb-24">
+        <article className="reading-container">
+          {/* Back link */}
           <Link 
             to="/stories" 
-            className="font-sans text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors mb-8 inline-block"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-12 text-sm font-body"
           >
-            ← Stories
+            <ArrowLeft className="w-4 h-4" />
+            All stories
           </Link>
           
-          <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground leading-tight fade-in">
-            {story.title}
-          </h1>
-          
-          <div className="mt-6 flex items-center gap-4 text-muted-foreground/60 fade-in" style={{ animationDelay: "0.1s" }}>
-            <span className="font-sans text-xs tracking-widest uppercase">
-              {story.genres?.[0] || "Fiction"}
-            </span>
-            <span>·</span>
-            <span className="font-sans text-xs">
-              {readingTime} min read
-            </span>
-          </div>
-
-          {/* Episode navigation if multiple episodes */}
-          {episodes.length > 1 && (
-            <div className="mt-8 flex flex-wrap gap-3 fade-in" style={{ animationDelay: "0.2s" }}>
-              {episodes.map((ep) => (
-                <button
-                  key={ep.id}
-                  onClick={() => setCurrentEpisode(ep)}
-                  className={`px-4 py-2 font-sans text-xs tracking-widest uppercase border transition-colors ${
-                    currentEpisode?.id === ep.id
-                      ? "border-foreground text-foreground"
-                      : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
-                  }`}
+          {/* Header */}
+          <header className="mb-16 animate-fade-in-up">
+            <div className="flex flex-wrap gap-3 mb-6">
+              {story.themes.map((theme) => (
+                <span 
+                  key={theme}
+                  className="text-xs text-rose/80 tracking-widest uppercase font-body"
                 >
-                  Part {ep.episode_number}
-                </button>
+                  {theme}
+                </span>
               ))}
             </div>
-          )}
-        </header>
-
-        {/* Story Content */}
-        <article className="reading-container py-16">
-          {currentEpisode?.content ? (
-            <div 
-              className="story-content fade-in"
-              dangerouslySetInnerHTML={{ 
-                __html: currentEpisode.content
-                  .split('\n\n')
-                  .map(p => `<p>${p}</p>`)
-                  .join('') 
-              }}
-            />
-          ) : (
-            <p className="text-muted-foreground italic">
-              This story is coming soon.
-            </p>
-          )}
-        </article>
-
-        {/* Story End */}
-        <div className="section-divider" />
-        
-        <div className="reading-container py-16 text-center">
-          <p className="font-serif text-muted-foreground italic mb-12 fade-in">
-            The story ends where the questions begin.
-          </p>
+            
+            <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl text-foreground tracking-wide mb-6">
+              {story.title}
+            </h1>
+            
+            <div className="flex items-center gap-4 text-muted-foreground">
+              <span className="flex items-center gap-2 text-sm font-body">
+                <Clock className="w-4 h-4" />
+                {story.readingTime} read
+              </span>
+            </div>
+          </header>
           
-          <Link
-            to="/stories"
-            className="inline-block px-8 py-3 border border-foreground/30 text-foreground font-sans text-sm tracking-widest uppercase hover:bg-foreground hover:text-background transition-all duration-300 fade-in"
-            style={{ animationDelay: "0.1s" }}
-          >
-            Read another story
-          </Link>
-        </div>
+          {/* Story content */}
+          <div className="story-prose animate-fade-in-up delay-200">
+            {story.content.map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
+          </div>
+          
+          {/* End section */}
+          <footer className="mt-24 pt-12 border-t border-border/30">
+            <p className="text-center text-muted-foreground font-body italic mb-12">
+              — The End —
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button 
+                asChild
+                className="bg-rose hover:bg-rose/90 text-primary-foreground px-8 py-6 font-body tracking-wide"
+              >
+                <Link to="/stories">
+                  <Heart className="w-4 h-4 mr-2" />
+                  Read another story
+                </Link>
+              </Button>
+            </div>
+          </footer>
+        </article>
       </main>
-
+      
       <SiteFooter />
     </div>
   );
