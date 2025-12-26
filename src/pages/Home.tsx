@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { StoryCard } from "@/components/StoryCard";
+import { AuthorLocation } from "@/components/AuthorLocation";
+import { SupportSection } from "@/components/SupportSection";
 import { Button } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 
@@ -68,12 +70,21 @@ export default function Home() {
         </div>
       </section>
       
+      {/* Author Location */}
+      <AuthorLocation city="Kraków" country="Poland" />
+      
       {/* Description */}
       <section className="py-16 border-y border-border/20">
         <div className="reading-container">
-          <p className="text-lg md:text-xl text-muted-foreground font-body leading-relaxed max-w-2xl italic">
-            These stories explore romantic tension, forbidden attraction, and the profound connections 
-            that form in life's most intimate moments.
+          <p className="text-lg md:text-xl text-muted-foreground font-body leading-relaxed max-w-2xl">
+            It began in a quiet café in Kraków. The rain was relentless, and I overheard 
+            a conversation between two strangers that would change everything. Every city 
+            holds thousands of these stories—whispered in cafés, carried in hearts that 
+            never forget.
+          </p>
+          <p className="mt-6 text-muted-foreground/70 font-body italic">
+            These stories exist to explore romantic tension, forbidden attraction, and the 
+            profound connections that form in life's most intimate moments.
           </p>
         </div>
       </section>
@@ -105,6 +116,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+      
+      {/* Support Section */}
+      <SupportSection />
       
       {/* Newsletter */}
       <section className="py-24 bg-secondary/30">

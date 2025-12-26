@@ -1,4 +1,4 @@
-import { MapPin, Calendar } from "lucide-react";
+import { MapPin, Feather, Calendar } from "lucide-react";
 
 interface AuthorLocationProps {
   city: string;
@@ -6,31 +6,37 @@ interface AuthorLocationProps {
   nextEpisode?: string;
 }
 
-export function AuthorLocation({ city, country, nextEpisode }: AuthorLocationProps) {
+export function AuthorLocation({ city, country }: AuthorLocationProps) {
   return (
-    <section className="container py-12">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary/20 via-card to-primary/10 border border-primary/20 p-8">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-        
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="p-4 rounded-full bg-primary/20 border border-primary/30">
-              <MapPin className="w-8 h-8 text-primary" />
+    <section className="py-16">
+      <div className="reading-container">
+        <div className="relative overflow-hidden bg-card/50 border border-border/30 p-8 md:p-12">
+          {/* Subtle glow */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-rose/5 rounded-full blur-3xl" />
+          
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="flex items-center gap-6">
+              <div className="p-4 rounded-full bg-rose/10 border border-rose/20">
+                <Feather className="w-6 h-6 text-rose" />
+              </div>
+              <div>
+                <p className="text-xs text-muted-foreground font-body uppercase tracking-widest mb-2">
+                  Currently Writing From
+                </p>
+                <h3 className="font-serif text-2xl md:text-3xl text-foreground tracking-wide">
+                  {city}
+                </h3>
+                <p className="text-muted-foreground font-body">{country}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-muted-foreground font-medium uppercase tracking-wider">Currently Writing From</p>
-              <h3 className="text-3xl font-bold text-foreground">{city}</h3>
-              <p className="text-lg text-muted-foreground">{country}</p>
+            
+            <div className="flex items-center gap-2 text-muted-foreground/60">
+              <MapPin className="w-4 h-4 text-rose/60" />
+              <span className="text-sm font-body italic">
+                Where stories find their voice
+              </span>
             </div>
           </div>
-          
-          {nextEpisode && (
-            <div className="flex items-center gap-3 px-6 py-3 rounded-full bg-background/50 border border-border">
-              <Calendar className="w-5 h-5 text-primary" />
-              <span className="text-sm text-muted-foreground">Next Episode:</span>
-              <span className="font-semibold text-foreground">{nextEpisode}</span>
-            </div>
-          )}
         </div>
       </div>
     </section>
