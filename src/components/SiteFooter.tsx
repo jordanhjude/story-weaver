@@ -8,10 +8,10 @@ export function SiteFooter() {
           {/* Brand */}
           <div className="space-y-3">
             <Link to="/" className="font-serif text-lg tracking-wide text-foreground hover:text-rose transition-colors">
-              Moonlit Letters
+              City of Whispers
             </Link>
             <p className="text-sm text-muted-foreground italic font-body">
-              Stories that stir the heart and imagination.
+              Anonymous tales of romance from the city.
             </p>
           </div>
           
@@ -56,7 +56,7 @@ export function SiteFooter() {
             This website contains mature content intended for adults 18 years of age and older.
           </p>
           <p className="text-xs text-muted-foreground/60 text-center mt-2">
-            © {new Date().getFullYear()} Moonlit Letters. All rights reserved.
+            © {new Date().getFullYear()} City of Whispers. All rights reserved.
           </p>
         </div>
       </div>
