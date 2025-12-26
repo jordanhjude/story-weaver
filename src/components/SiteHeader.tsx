@@ -4,6 +4,7 @@ import { Menu, X } from "lucide-react";
 
 const navItems = [
   { to: "/stories", label: "Stories" },
+  { to: "/categories", label: "Categories" },
   { to: "/about", label: "About" },
   { to: "/subscribe", label: "Subscribe" },
 ];
@@ -13,15 +14,15 @@ export function SiteHeader() {
   const location = useLocation();
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/50">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border/30">
       <nav className="reading-container py-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link 
             to="/" 
-            className="font-serif text-xl tracking-wide text-foreground hover:text-gold transition-colors duration-300"
+            className="font-serif text-xl tracking-wide text-foreground hover:text-rose transition-colors duration-300"
           >
-            Where the Law Ends
+            Moonlit Letters
           </Link>
 
           {/* Desktop Navigation */}
