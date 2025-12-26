@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logoImage from "@/assets/logo-city-whispers.png";
+import logoImage from "@/assets/logo-city-whispers-v2.png";
 
 export function SiteFooter() {
   return (
