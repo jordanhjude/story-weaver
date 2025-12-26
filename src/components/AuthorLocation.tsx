@@ -1,4 +1,4 @@
-import { MapPin, Feather, EyeOff } from "lucide-react";
+import { MapPin, EyeOff, Plane } from "lucide-react";
 
 interface AuthorLocationProps {
   city: string;
@@ -26,15 +26,23 @@ export function AuthorLocation({ city, country }: AuthorLocationProps) {
                 <h3 className="font-serif text-2xl md:text-3xl text-foreground tracking-wide">
                   {city}
                 </h3>
-                <p className="text-muted-foreground font-body italic">{country}</p>
+                <p className="text-muted-foreground font-body">{country}</p>
               </div>
             </div>
             
-            <div className="flex items-center gap-2 text-muted-foreground/60">
-              <MapPin className="w-4 h-4 text-rose/60" />
-              <span className="text-sm font-body italic">
-                Identity unknown. Stories everywhere.
-              </span>
+            <div className="flex flex-col items-end gap-2">
+              <div className="flex items-center gap-2 text-muted-foreground/60">
+                <MapPin className="w-4 h-4 text-rose/60" />
+                <span className="text-sm font-body italic">
+                  Identity unknown. Stories everywhere.
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground/40">
+                <Plane className="w-3 h-3" />
+                <span className="text-xs font-body">
+                  Next destination: coming soon
+                </span>
+              </div>
             </div>
           </div>
         </div>

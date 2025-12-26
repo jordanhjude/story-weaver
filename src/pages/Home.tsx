@@ -58,15 +58,16 @@ export default function Home() {
         <div className="reading-container">
           <div className="max-w-2xl animate-fade-in-up">
             <p className="text-sm text-muted-foreground font-body uppercase tracking-widest mb-4 opacity-70">
-              Anonymous tales from the world
+              Letting cities speak of love and romance
             </p>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight tracking-wide">
-              Where romance echoes through ancient streets.
+              Every city has a love story waiting to be told.
             </h1>
             
             <p className="mt-8 text-lg text-muted-foreground font-body leading-relaxed opacity-0 animate-fade-in-up delay-200">
-              Intimate stories of connection and desire, all born from 
-              the cobblestones, cafés, and hidden corners of Kraków.
+              An anonymous writer. A journey across the world. 
+              Intimate stories of romance born from the streets, cafés, and 
+              hidden corners of each city I visit.
             </p>
             
             <div className="mt-12 opacity-0 animate-fade-in-up delay-300">
@@ -91,12 +92,12 @@ export default function Home() {
       <section className="py-16 border-y border-border/20">
         <div className="reading-container">
           <p className="text-lg md:text-xl text-muted-foreground font-body leading-relaxed max-w-2xl">
-            I write from the corner table at Café Camelot, from benches along the Planty, 
-            from windows overlooking the Rynek. Every story here was born in Kraków—
-            whispered in its churches, felt on its bridges, lived in its secrets.
+            Right now, I'm in Kraków—writing from its ancient squares, candlelit 
+            cafés, and moonlit castle walls. But this is just the beginning. 
+            Paris, Tokyo, Barcelona, Buenos Aires... each city will have its chapter.
           </p>
           <p className="mt-6 text-muted-foreground/70 font-body italic">
-            You won't know my name. But you'll know this city through my eyes.
+            You won't know my name. But you'll feel every city through my words.
           </p>
         </div>
       </section>
@@ -104,9 +105,14 @@ export default function Home() {
       {/* Featured Stories */}
       <section className="py-24">
         <div className="wide-container">
-          <h2 className="font-serif text-2xl text-foreground mb-12 tracking-wide">
-            Stories from Kraków
-          </h2>
+          <div className="flex items-baseline justify-between mb-12">
+            <h2 className="font-serif text-2xl text-foreground tracking-wide">
+              Current Chapter: Kraków
+            </h2>
+            <span className="text-sm text-muted-foreground/60 font-body italic hidden md:block">
+              More cities coming soon...
+            </span>
+          </div>
           
           <div className="grid md:grid-cols-2 gap-8">
             {featuredStories.map((story, index) => (
@@ -136,10 +142,10 @@ export default function Home() {
       <section className="py-24 bg-secondary/30">
         <div className="reading-container text-center">
           <h2 className="font-serif text-2xl text-foreground mb-4 tracking-wide">
-            Join the Inner Circle
+            Follow the Journey
           </h2>
           <p className="text-muted-foreground font-body mb-8 max-w-md mx-auto">
-            Receive new Kraków stories and exclusive content. No spam, just whispers.
+            Be the first to know when I arrive in a new city. New stories, new whispers.
           </p>
           
           <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
