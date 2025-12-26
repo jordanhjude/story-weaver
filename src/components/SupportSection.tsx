@@ -35,53 +35,71 @@ export function SupportSection() {
   };
 
   return (
-    <section className="container py-10">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-card to-primary/5 border border-border p-6 md:p-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-center md:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-3">
-              <Heart className="w-3 h-3 text-primary" />
-              <span className="text-xs font-medium text-primary">Support My Journey</span>
+    <section className="py-16">
+      <div className="reading-container">
+        <div className="relative overflow-hidden bg-card/50 border border-border/30 p-8 md:p-12">
+          {/* Subtle glow effect */}
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-rose/5 rounded-full blur-3xl" />
+          
+          <div className="relative z-10">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2 rounded-full bg-rose/10 border border-rose/20">
+                <Heart className="w-4 h-4 text-rose" />
+              </div>
+              <span className="text-xs text-rose font-body uppercase tracking-widest">
+                Support the Journey
+              </span>
             </div>
-            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
-              Help Me Write Stories From Your City
+            
+            <h2 className="font-serif text-2xl md:text-3xl text-foreground tracking-wide mb-3">
+              Help Bring These Stories to Life
             </h2>
-            <div className="flex items-center justify-center md:justify-start gap-4 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <MapPin className="w-4 h-4 text-primary" />
-                12 Cities
+            
+            <p className="text-muted-foreground font-body leading-relaxed mb-8 max-w-xl">
+              Your support helps me travel to new cities, find inspiration, and craft 
+              the emotionally rich tales that make Moonlit Letters special.
+            </p>
+            
+            {/* Stats */}
+            <div className="flex flex-wrap gap-6 mb-8 text-sm text-muted-foreground/70 font-body">
+              <span className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-rose/60" />
+                12 Cities Visited
               </span>
               <span>47 Supporters</span>
               <span>$2,450 Raised</span>
             </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            {DONATION_AMOUNTS.map((amount) => (
-              <button
-                key={amount}
-                onClick={() => setSelectedAmount(amount)}
-                className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all ${
-                  selectedAmount === amount
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted hover:bg-muted/80 text-foreground"
-                }`}
+            
+            {/* Donation selector */}
+            <div className="flex flex-wrap items-center gap-3">
+              {DONATION_AMOUNTS.map((amount) => (
+                <button
+                  key={amount}
+                  onClick={() => setSelectedAmount(amount)}
+                  className={`px-5 py-2.5 font-body text-sm tracking-wide transition-all duration-300 border ${
+                    selectedAmount === amount
+                      ? "bg-rose text-primary-foreground border-rose"
+                      : "bg-transparent text-muted-foreground border-border/50 hover:border-rose/50 hover:text-foreground"
+                  }`}
+                >
+                  ${amount}
+                </button>
+              ))}
+              
+              <Button 
+                onClick={handleDonate}
+                disabled={isLoading}
+                className="bg-rose hover:bg-rose/90 text-primary-foreground px-6 py-2.5 font-body tracking-wide"
               >
-                ${amount}
-              </button>
-            ))}
-            <Button 
-              onClick={handleDonate}
-              disabled={isLoading}
-              className="ml-2 bg-primary hover:bg-primary/90"
-            >
-              {isLoading ? (
-                <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-              ) : (
-                <CreditCard className="w-4 h-4 mr-1" />
-              )}
-              {isLoading ? "Processing..." : "Donate"}
-            </Button>
+                {isLoading ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <CreditCard className="w-4 h-4 mr-2" />
+                )}
+                {isLoading ? "Processing..." : "Support"}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
