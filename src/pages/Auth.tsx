@@ -59,12 +59,11 @@ export default function Auth() {
         </Link>
 
         <div className="text-center mb-8">
-          <h1 className="font-black text-4xl tracking-tight mb-2">
-            <span className="text-primary">JJ</span>
-            <span className="text-foreground">tales</span>
+          <h1 className="font-serif text-3xl tracking-wide mb-2 text-foreground">
+            City of Whispers
           </h1>
-          <p className="text-muted-foreground">
-            Sign in to access your library and support the author
+          <p className="text-muted-foreground text-sm">
+            Sign in to save your favorites and support the anonymous author
           </p>
         </div>
 

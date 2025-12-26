@@ -53,12 +53,12 @@ export function SupportSection() {
             </div>
             
             <h2 className="font-serif text-2xl md:text-3xl text-foreground tracking-wide mb-3">
-              Help Bring These Stories to Life
+              Help Keep the Whispers Alive
             </h2>
             
             <p className="text-muted-foreground font-body leading-relaxed mb-8 max-w-xl">
               Your support helps me travel to new cities, find inspiration, and craft 
-              the emotionally rich tales that make Moonlit Letters special.
+              the intimate stories that make City of Whispers possible.
             </p>
             
             {/* Stats */}

@@ -22,7 +22,7 @@ export function SiteHeader() {
             to="/" 
             className="font-serif text-xl tracking-wide text-foreground hover:text-rose transition-colors duration-300"
           >
-            Moonlit Letters
+            City of Whispers
           </Link>
 
           {/* Desktop Navigation */}

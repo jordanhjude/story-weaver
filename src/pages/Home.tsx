@@ -47,12 +47,16 @@ export default function Home() {
       <section className="pt-40 pb-24">
         <div className="reading-container">
           <div className="max-w-2xl animate-fade-in-up">
+            <p className="text-sm text-muted-foreground font-body uppercase tracking-widest mb-4 opacity-70">
+              Written anonymously from cities around the world
+            </p>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight tracking-wide">
-              Step into worlds of emotion and desire.
+              Where romance lives in the streets.
             </h1>
             
             <p className="mt-8 text-lg text-muted-foreground font-body leading-relaxed opacity-0 animate-fade-in-up delay-200">
-              Mature stories written for adults seeking romance and connection.
+              Intimate stories of connection, desire, and the quiet moments 
+              that unfold when strangers become something more.
             </p>
             
             <div className="mt-12 opacity-0 animate-fade-in-up delay-300">
@@ -71,20 +75,18 @@ export default function Home() {
       </section>
       
       {/* Author Location */}
-      <AuthorLocation city="Kraków" country="Poland" />
+      <AuthorLocation city="Somewhere" country="in a city near you" />
       
       {/* Description */}
       <section className="py-16 border-y border-border/20">
         <div className="reading-container">
           <p className="text-lg md:text-xl text-muted-foreground font-body leading-relaxed max-w-2xl">
-            It began in a quiet café in Kraków. The rain was relentless, and I overheard 
-            a conversation between two strangers that would change everything. Every city 
-            holds thousands of these stories—whispered in cafés, carried in hearts that 
-            never forget.
+            I write from cafés, hotel rooms, and park benches. The cities change, 
+            but the stories remain—whispered confessions of attraction, forbidden 
+            glances across crowded rooms, and the electric tension of almost.
           </p>
           <p className="mt-6 text-muted-foreground/70 font-body italic">
-            These stories exist to explore romantic tension, forbidden attraction, and the 
-            profound connections that form in life's most intimate moments.
+            You won't know my name. But you'll recognize the feelings.
           </p>
         </div>
       </section>
@@ -124,10 +126,10 @@ export default function Home() {
       <section className="py-24 bg-secondary/30">
         <div className="reading-container text-center">
           <h2 className="font-serif text-2xl text-foreground mb-4 tracking-wide">
-            Join Our Readers
+            Join the Inner Circle
           </h2>
           <p className="text-muted-foreground font-body mb-8 max-w-md mx-auto">
-            Receive new stories and exclusive content delivered to your inbox.
+            Receive new stories and exclusive content. No spam, just whispers.
           </p>
           
           <form className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
