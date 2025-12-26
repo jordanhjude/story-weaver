@@ -1,66 +1,70 @@
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
+    <div className="min-h-screen flex flex-col bg-background">
+      <SiteHeader />
       
-      <main className="flex-1 container py-12 max-w-3xl">
-        <h1 className="text-3xl font-black mb-8">Privacy Policy</h1>
-        
-        <div className="prose prose-invert max-w-none space-y-6 text-foreground/80">
-          <p className="text-sm text-muted-foreground">Last updated: December 2024</p>
+      <main className="flex-1 pt-24">
+        <section className="reading-container py-16">
+          <h1 className="font-serif text-3xl md:text-4xl text-foreground mb-4 fade-in">
+            Privacy Policy
+          </h1>
+          <p className="text-muted-foreground/60 text-sm mb-12 fade-in" style={{ animationDelay: "0.1s" }}>
+            Last updated: December 2024
+          </p>
           
-          <section>
-            <h2 className="text-xl font-bold text-foreground mb-3">1. Information We Collect</h2>
-            <p>When you use JJtales, we may collect the following information:</p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Account information (email, name) when you sign in with Google</li>
-              <li>Reading history and saved comics in your library</li>
-              <li>Usage data to improve our service</li>
-            </ul>
-          </section>
+          <div className="space-y-12 text-muted-foreground leading-relaxed">
+            <section className="fade-in" style={{ animationDelay: "0.2s" }}>
+              <h2 className="font-serif text-xl text-foreground mb-4">Information We Collect</h2>
+              <p className="mb-4">When you use Where the Law Ends, we may collect:</p>
+              <ul className="list-none space-y-2 pl-4">
+                <li>— Email address when you subscribe</li>
+                <li>— Reading preferences and history</li>
+                <li>— Basic usage data to improve our service</li>
+              </ul>
+            </section>
 
-          <section>
-            <h2 className="text-xl font-bold text-foreground mb-3">2. How We Use Your Information</h2>
-            <p>We use your information to:</p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Provide and maintain your account</li>
-              <li>Save your reading preferences and library</li>
-              <li>Improve our comics and user experience</li>
-              <li>Send important updates about the service</li>
-            </ul>
-          </section>
+            <section className="fade-in" style={{ animationDelay: "0.3s" }}>
+              <h2 className="font-serif text-xl text-foreground mb-4">How We Use Your Information</h2>
+              <p className="mb-4">We use your information to:</p>
+              <ul className="list-none space-y-2 pl-4">
+                <li>— Deliver stories to your inbox</li>
+                <li>— Improve our content and experience</li>
+                <li>— Send occasional updates about new work</li>
+              </ul>
+            </section>
 
-          <section>
-            <h2 className="text-xl font-bold text-foreground mb-3">3. Data Security</h2>
-            <p>We implement appropriate security measures to protect your personal information. Your data is stored securely and we do not sell your information to third parties.</p>
-          </section>
+            <section className="fade-in" style={{ animationDelay: "0.4s" }}>
+              <h2 className="font-serif text-xl text-foreground mb-4">Data Security</h2>
+              <p>
+                We implement appropriate security measures to protect your personal information. 
+                Your data is stored securely and we do not sell your information to third parties.
+              </p>
+            </section>
 
-          <section>
-            <h2 className="text-xl font-bold text-foreground mb-3">4. Cookies</h2>
-            <p>We use essential cookies to maintain your session and preferences. These are necessary for the website to function properly.</p>
-          </section>
+            <section className="fade-in" style={{ animationDelay: "0.5s" }}>
+              <h2 className="font-serif text-xl text-foreground mb-4">Your Rights</h2>
+              <p className="mb-4">You have the right to:</p>
+              <ul className="list-none space-y-2 pl-4">
+                <li>— Access your personal data</li>
+                <li>— Request deletion of your data</li>
+                <li>— Unsubscribe at any time</li>
+              </ul>
+            </section>
 
-          <section>
-            <h2 className="text-xl font-bold text-foreground mb-3">5. Your Rights</h2>
-            <p>You have the right to:</p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Access your personal data</li>
-              <li>Request deletion of your account</li>
-              <li>Update your information</li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-bold text-foreground mb-3">6. Contact</h2>
-            <p>For any privacy-related questions, please contact us through our website.</p>
-          </section>
-        </div>
+            <section className="fade-in" style={{ animationDelay: "0.6s" }}>
+              <h2 className="font-serif text-xl text-foreground mb-4">Contact</h2>
+              <p>
+                For any privacy-related questions, please reach out through our website.
+              </p>
+            </section>
+          </div>
+        </section>
       </main>
 
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }
