@@ -13,7 +13,7 @@ interface Comment {
   id: string;
   content: string;
   author_name: string | null;
-  user_id: string;
+  is_owner: boolean;
   created_at: string;
 }
 
@@ -62,11 +62,9 @@ export function StoryInteractions({ storyId }: StoryInteractionsProps) {
   };
 
   const fetchComments = async () => {
+    // Use secure function that returns comments without exposing user_ids
     const { data } = await supabase
-      .from("story_comments")
-      .select("*")
-      .eq("story_id", storyId)
-      .order("created_at", { ascending: false });
+      .rpc("get_story_comments", { p_story_id: storyId });
     
     setComments(data || []);
   };
@@ -232,7 +230,7 @@ export function StoryInteractions({ storyId }: StoryInteractionsProps) {
                       </p>
                     </div>
                     
-                    {user?.id === comment.user_id && (
+                    {comment.is_owner && (
                       <button
                         onClick={() => handleDeleteComment(comment.id)}
                         className="text-muted-foreground/50 hover:text-rose transition-colors"
