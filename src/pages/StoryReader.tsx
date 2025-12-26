@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { StoryInteractions } from "@/components/StoryInteractions";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Clock, Heart } from "lucide-react";
 
@@ -181,8 +182,11 @@ export default function StoryReader() {
             ))}
           </div>
           
+          {/* Interactions - Likes and Comments */}
+          <StoryInteractions storyId={id || "velvet-nights"} />
+          
           {/* End section */}
-          <footer className="mt-24 pt-12 border-t border-border/30">
+          <footer className="mt-16 pt-12 border-t border-border/30">
             <p className="text-center text-muted-foreground font-body italic mb-12">
               — The End —
             </p>
