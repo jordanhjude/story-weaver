@@ -58,7 +58,7 @@ export default function Home() {
         <div className="reading-container">
           <div className="max-w-2xl animate-fade-in-up">
             <p className="text-sm text-muted-foreground font-body uppercase tracking-widest mb-4 opacity-70">
-              Anonymous tales from Kraków, Poland
+              Anonymous tales from the world
             </p>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight tracking-wide">
               Where romance echoes through ancient streets.
