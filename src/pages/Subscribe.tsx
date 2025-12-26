@@ -1,6 +1,8 @@
-import { useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { Button } from "@/components/ui/button";
+import { Heart, BookOpen, Star, Mail } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function Subscribe() {
@@ -11,77 +13,110 @@ export default function Subscribe() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate subscription
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    toast.success("Subscribed. You'll hear from us soon.");
+    toast.success("Subscribed! You'll receive our latest stories soon.");
     setEmail("");
     setIsSubmitting(false);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen bg-background velvet-texture">
       <SiteHeader />
       
-      <main className="flex-1 pt-24">
-        <section className="reading-container py-16 md:py-24">
-          <div className="max-w-md">
-            <h1 className="font-serif text-3xl md:text-4xl text-foreground mb-6 fade-in">
-              Subscribe
+      <main className="pt-32 pb-24">
+        <div className="reading-container">
+          {/* Header */}
+          <div className="max-w-2xl mb-16 animate-fade-in-up">
+            <h1 className="font-serif text-3xl md:text-4xl text-foreground tracking-wide mb-4">
+              Join Our Readers
             </h1>
+            <p className="text-muted-foreground font-body leading-relaxed">
+              Subscribe to receive new stories and exclusive content delivered 
+              directly to your inbox.
+            </p>
+          </div>
+          
+          {/* Free Newsletter */}
+          <div className="bg-card/50 border border-border/30 p-8 md:p-12 mb-12 animate-fade-in-up delay-100">
+            <div className="flex items-center gap-3 mb-6">
+              <Mail className="w-5 h-5 text-rose" />
+              <h2 className="font-serif text-xl text-foreground tracking-wide">
+                Free Newsletter
+              </h2>
+            </div>
             
-            <p className="text-muted-foreground mb-12 leading-relaxed fade-in" style={{ animationDelay: "0.1s" }}>
-              New stories delivered to your inbox. No spam, no algorithms, 
-              no bright colors. Just dark fiction for serious readers.
+            <p className="text-muted-foreground font-body leading-relaxed mb-8">
+              Receive weekly story recommendations, writing updates, and exclusive 
+              excerpts from upcoming tales.
             </p>
             
-            <form onSubmit={handleSubmit} className="space-y-6 fade-in" style={{ animationDelay: "0.2s" }}>
-              <div>
-                <label htmlFor="email" className="block font-sans text-xs tracking-widest uppercase text-muted-foreground mb-3">
-                  Email address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 bg-transparent border border-border text-foreground font-body focus:outline-none focus:border-foreground transition-colors"
-                  placeholder="your@email.com"
-                />
-              </div>
-              
-              <button
+            <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-lg">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Your email address"
+                required
+                className="flex-1 px-4 py-3 bg-background border border-border/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-rose/50 font-body text-sm"
+              />
+              <Button 
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full px-8 py-3 border border-foreground/30 text-foreground font-sans text-sm tracking-widest uppercase hover:bg-foreground hover:text-background transition-all duration-300 disabled:opacity-50"
+                className="bg-rose hover:bg-rose/90 text-primary-foreground px-6 py-3 font-body tracking-wide disabled:opacity-50"
               >
                 {isSubmitting ? "Subscribing..." : "Subscribe"}
-              </button>
+              </Button>
             </form>
             
-            <p className="mt-8 text-muted-foreground/50 text-sm fade-in" style={{ animationDelay: "0.3s" }}>
-              We respect your privacy. Unsubscribe anytime.
+            <p className="text-xs text-muted-foreground/60 mt-4">
+              By subscribing, you confirm you are 18 years or older. We respect your privacy.
+            </p>
+          </div>
+          
+          {/* Premium Membership */}
+          <div className="border-t border-border/30 pt-16">
+            <h2 className="font-serif text-2xl text-foreground tracking-wide mb-8">
+              Premium Membership
+            </h2>
+            <p className="text-muted-foreground font-body leading-relaxed mb-12 max-w-xl">
+              For readers who desire more, our premium membership offers exclusive 
+              access to longer stories, early releases, and special collections.
             </p>
             
-            <div className="section-divider !mx-0 my-16" />
-            
-            <div className="fade-in" style={{ animationDelay: "0.4s" }}>
-              <h2 className="font-serif text-xl text-foreground mb-4">
-                Premium Membership
-              </h2>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-                For readers who want more: early access to new stories, 
-                exclusive long-form fiction, and audio narrations.
-              </p>
-              <p className="text-muted-foreground/50 text-sm italic">
-                Coming soon.
-              </p>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="p-6 bg-card/30 border border-border/20 opacity-0 animate-fade-in-up delay-200">
+                <Heart className="w-5 h-5 text-rose mb-4" />
+                <h3 className="font-serif text-lg text-foreground mb-2">Early Access</h3>
+                <p className="text-sm text-muted-foreground font-body">
+                  Read new stories before they're published to the public.
+                </p>
+              </div>
+              
+              <div className="p-6 bg-card/30 border border-border/20 opacity-0 animate-fade-in-up delay-300">
+                <BookOpen className="w-5 h-5 text-rose mb-4" />
+                <h3 className="font-serif text-lg text-foreground mb-2">Long-Form Tales</h3>
+                <p className="text-sm text-muted-foreground font-body">
+                  Exclusive multi-chapter stories and serialized novels.
+                </p>
+              </div>
+              
+              <div className="p-6 bg-card/30 border border-border/20 opacity-0 animate-fade-in-up delay-400">
+                <Star className="w-5 h-5 text-rose mb-4" />
+                <h3 className="font-serif text-lg text-foreground mb-2">Special Collections</h3>
+                <p className="text-sm text-muted-foreground font-body">
+                  Curated collections and downloadable ebooks.
+                </p>
+              </div>
             </div>
+            
+            <p className="text-muted-foreground/60 font-body text-sm mt-12 italic">
+              Premium membership coming soon. Subscribe to the newsletter to be notified.
+            </p>
           </div>
-        </section>
+        </div>
       </main>
-
+      
       <SiteFooter />
     </div>
   );

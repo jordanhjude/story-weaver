@@ -1,57 +1,68 @@
 import { Link } from "react-router-dom";
+import { Clock, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { CSSProperties } from "react";
 
 interface StoryCardProps {
-  story: {
-    id: string;
-    title: string;
-    description?: string | null;
-    genres?: string[] | null;
-  };
+  id: string;
+  title: string;
+  excerpt: string;
+  readingTime: string;
+  themes?: string[];
+  className?: string;
   style?: CSSProperties;
 }
 
-export function StoryCard({ story, style }: StoryCardProps) {
-  // Estimate reading time based on description length (rough estimate)
-  const readingTime = Math.max(5, Math.floor((story.description?.length || 0) / 200));
-  
-  // Get first genre as theme
-  const theme = story.genres?.[0] || "Fiction";
-
+export function StoryCard({ id, title, excerpt, readingTime, themes, className, style }: StoryCardProps) {
   return (
     <article 
-      className="border-b border-border/30 py-8 group fade-in"
+      className={cn(
+        "group p-8 bg-card/50 border border-border/30 hover:border-rose/30 transition-all duration-500 hover:romantic-glow",
+        className
+      )}
       style={style}
     >
-      <Link to={`/story/${story.id}`} className="block">
-        <div className="flex items-start justify-between gap-6">
-          <div className="flex-1">
-            <h3 className="font-serif text-xl md:text-2xl text-foreground group-hover:text-gold transition-colors duration-300">
-              {story.title}
-            </h3>
-            
-            {story.description && (
-              <p className="mt-3 text-muted-foreground line-clamp-2 leading-relaxed">
-                {story.description}
-              </p>
-            )}
-            
-            <div className="mt-4 flex items-center gap-4">
-              <span className="font-sans text-xs tracking-widest uppercase text-muted-foreground/60">
+      <div className="space-y-4">
+        {/* Themes */}
+        {themes && themes.length > 0 && (
+          <div className="flex gap-3">
+            {themes.map((theme) => (
+              <span 
+                key={theme} 
+                className="text-xs text-rose/80 tracking-widest uppercase font-body"
+              >
                 {theme}
               </span>
-              <span className="text-muted-foreground/30">·</span>
-              <span className="font-sans text-xs text-muted-foreground/60">
-                {readingTime} min read
-              </span>
-            </div>
+            ))}
+          </div>
+        )}
+        
+        {/* Title */}
+        <h3 className="font-serif text-xl md:text-2xl text-foreground tracking-wide group-hover:text-rose transition-colors duration-300">
+          {title}
+        </h3>
+        
+        {/* Excerpt */}
+        <p className="text-muted-foreground font-body leading-relaxed text-sm md:text-base italic">
+          {excerpt}
+        </p>
+        
+        {/* Meta */}
+        <div className="flex items-center justify-between pt-4 border-t border-border/20">
+          <div className="flex items-center gap-2 text-muted-foreground/70">
+            <Clock className="w-3.5 h-3.5" />
+            <span className="text-xs font-body tracking-wide">{readingTime}</span>
           </div>
           
-          <span className="font-sans text-xs tracking-widest uppercase text-muted-foreground group-hover:text-foreground transition-colors duration-300 hidden md:block">
+          <Link 
+            to={`/story/${id}`}
+            className="flex items-center gap-2 text-sm text-rose hover:text-rose/80 transition-colors font-body tracking-wide"
+          >
             Read
-          </span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
         </div>
-      </Link>
+      </div>
     </article>
   );
 }
