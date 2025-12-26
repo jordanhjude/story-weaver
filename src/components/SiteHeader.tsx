@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import logoImage from "@/assets/logo-city-whispers.png";
+import logoImage from "@/assets/logo-city-whispers-v2.png";
 
 const navItems = [
   { to: "/stories", label: "Stories" },
