@@ -4,6 +4,13 @@ import { StoryCard } from "@/components/StoryCard";
 
 const allStories = [
   {
+    id: "rynel-nights",
+    title: "Rynel Nights",
+    excerpt: "The Sukiennice glowed, a medieval behemoth breathing golden light onto the Rynek. Amidst the swirling currents of laughter and music, her gaze snagged on a familiar silhouette—three years had passed, but some imprints never faded...",
+    readingTime: "12 min",
+    themes: ["Reunion", "Main Square"],
+  },
+  {
     id: "velvet-nights",
     title: "Velvet Nights",
     excerpt: "She never expected to find him waiting in the garden, beneath the same jasmine that witnessed their first meeting years ago...",

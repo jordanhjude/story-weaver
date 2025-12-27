@@ -15,9 +15,9 @@ import krakowMoonlightImg from "@/assets/stories/krakow-moonlight.jpg";
 
 const featuredStories = [
   {
-    id: "rynek-nights",
-    title: "Rynek Nights",
-    excerpt: "Under the glow of the Sukiennice, she saw him again—the stranger from the café who had vanished three years ago without a word...",
+    id: "rynel-nights",
+    title: "Rynel Nights",
+    excerpt: "The Sukiennice glowed, a medieval behemoth breathing golden light onto the Rynek. Amidst the swirling currents of laughter and music, her gaze snagged on a familiar silhouette—three years had passed, but some imprints never faded...",
     readingTime: "12 min",
     themes: ["Reunion", "Main Square"],
     image: krakowVelvetImg,
